@@ -49,8 +49,9 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
-        
+        implementation "org.xerial:sqlite-jdbc:3.36.0.3"
     }
+
 }
 
 project(":android") {

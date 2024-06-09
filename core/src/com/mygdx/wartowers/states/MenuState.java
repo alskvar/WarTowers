@@ -6,39 +6,35 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.wartowers.WarTowers;
-import com.mygdx.wartowers.utils.Constants;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.wartowers.DatabaseInterface;
+import com.mygdx.wartowers.utils.Constants;
 
 public class MenuState extends State{
 
     private Stage stage;
     private Texture background;
     private Texture menub;
+    private DatabaseInterface dbInterface;
 
-    public MenuState(GameStateManager gsm){
+//    public MenuState(GameStateManager gsm){
+    public MenuState(GameStateManager gsm, DatabaseInterface dbInterface){
         super(gsm);
         background = new Texture("menu_bg.jpg");
 //        menub = new Texture("menub.png");
         set_stage();
+        this.dbInterface = dbInterface;
     }
 
     private Label[] fill_bestPlayersList(Skin skin){
@@ -87,30 +83,20 @@ public class MenuState extends State{
 //                gsm.set(new MenuState(gsm));
             }
         });
-        //add menu drop bar with items: settings, exit, etc.
-
-//        TextButton menu_button = new TextButton("MENU", skin);
-//        menu_button.setSize(200, 100);
-//        menu_button.getLabel().setFontScale(2.0f, 2.0f);
-//        menu_button.setPosition(Constants.APP_WIDTH - menu_button.getWidth(), Constants.APP_HEIGHT - menu_button.getHeight());
-//        menu_button.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                gsm.set(new MenuState(gsm));
-//            }
-//        });
+        
         ////////////////////////////////////////////////////////////////
 
         TextButton bestPlayersButton = new TextButton("Best Players", skin);
-        //set size of the button
         bestPlayersButton.setSize(120, 80);
-        //set font size
         bestPlayersButton.getLabel().setFontScale(0.6f, 0.6f);
         // Set the position of the button on the top right corner under the menu button
         bestPlayersButton.setPosition(Constants.APP_WIDTH - bestPlayersButton.getWidth()-50, Constants.APP_HEIGHT - bestPlayersButton.getHeight() - menu_button.getHeight()-50);
 
 
-// Create the list of "Best players"
+        ////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////
+        // Create the list of "Best players"
+
         Table scrollTable = new Table(skin);
         Label[] scores = fill_bestPlayersList(skin);
         for(Label curLabel : scores){
