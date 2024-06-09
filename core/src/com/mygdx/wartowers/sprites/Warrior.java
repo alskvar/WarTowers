@@ -9,13 +9,17 @@ public class Warrior {
     private final int defence;
     private final int attack;
 
-    Random random;
+//    private final Random random;
 
-    public Warrior(){
-        random = new Random();
-        kind = random.nextInt(2);
-        defence = Constants.warriors_defence[kind];
-        attack = Constants.warriors_attack[kind];
+    public  Warrior(){
+        this(new Random().nextInt(2));
+    }
+
+    public Warrior(int kind){
+//        this.random = new Random();
+        this.kind = kind;
+        this.defence = Constants.warriors_defence[this.kind];
+        this.attack = Constants.warriors_attack[this.kind];
 
     }
 

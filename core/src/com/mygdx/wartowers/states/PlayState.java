@@ -4,27 +4,21 @@ package com.mygdx.wartowers.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.wartowers.sprites.Battleground;
 import com.mygdx.wartowers.sprites.Tower;
 import com.mygdx.wartowers.utils.Constants;
 
@@ -38,30 +32,23 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     private static final int TOWER_COUNT = 4;
 
-    private Stage stage;
-    private Array<Tower> towers;
-//    private Tower tower;
-    private Texture bg;
-    private Random random;
+    private final Stage stage;
+    private Battleground battleground;
+    private final Texture bg;
+    private final Random random;
     private Vector2 groundPos1, groundPos2;
 
     public PlayState(GameStateManager gsm){
         super(gsm);
-        bg = new Texture("play_bg_tmp.jpg");
-
         random = new Random();
-        towers = new Array<Tower>();
-        for (int i = 0; i < TOWER_COUNT; ++i){
-            towers.add(new Tower(i*100 + 40, 210, i));
-        }
 
+        battleground = new Battleground(loadJsonFromFile(Constants.BATTLEGROUND_JSON_PATH));
+
+        bg = new Texture(battleground.getBackgroundImagePath());
         stage = new Stage(new ScreenViewport());
-//        set_table();
-//        set_touchpad();
         gestureDetector = new GestureDetector(this);
         doubleTapDetected = false;
         Gdx.input.setInputProcessor(new InputMultiplexer(this, gestureDetector));
-//        Gdx.input.setInputProcessor(this);
     }
 
     private void set_touchpad(){
@@ -80,6 +67,11 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         touchpad.setSize(50, 50);
         touchpad.setPosition(200, 200);
         stage.addActor(touchpad);
+    }
+
+    public static String loadJsonFromFile(String filePath) {
+        FileHandle fileHandle = Gdx.files.internal(filePath);
+        return fileHandle.readString();
     }
 
     private void set_table(){
@@ -122,21 +114,17 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     public void update(float dt) {
-        for(int i = 0; i < towers.size; ++i){
-            towers.get(i).update(dt);
-        }
-
+        battleground.updateTowers(dt);
     }
 
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
         sb.draw(bg, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
-        for(int i = 0; i < towers.size; ++i) {
-            Tower tower = towers.get(i);
-            sb.draw(tower.getTower(), tower.getPosition().x, tower.getPosition().y);
+        for (Tower tower : battleground.getTowers()) {
+            sb.draw(tower.getTowerTexture(), tower.getPosition().x, tower.getPosition().y);
             tower.getFont().draw(sb, "has " + tower.getAmount(), tower.getPosition().x, tower.getPosition().y - 10);
-            tower.getFont().draw(sb, "warType " + tower.getWarrior().getKind(), tower.getPosition().x- 5, tower.getPosition().y - 20);
+            tower.getFont().draw(sb, "warType " + tower.getWarrior().getKind(), tower.getPosition().x - 5, tower.getPosition().y - 20);
         }
         sb.end();
 //        stage.act();
@@ -147,7 +135,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     public void dispose() {
         bg.dispose();
         stage.dispose();
-        towers.clear();
+        battleground.dispose();
     }
 
     @Override
@@ -160,8 +148,8 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         y = 800 - y;
         if (doubleTapDetected) {
             System.out.println("Double tap detected!");
-            for(int i = 0; i < towers.size; ++i) {
-                Tower tower = towers.get(i);
+            for(int i = 0; i < battleground.getTowers().size; ++i) {
+                Tower tower = battleground.getTowers().get(i);
                 if (tower.overlap(x, y)) {
                     tower.upgradeTower();
                     break;
@@ -230,8 +218,8 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         screenY = 800 - screenY;
 //        System.out.println("point: " + pointer);
 //        System.out.println("x: " + screenX + ", y: " + screenY + ", point: " + pointer + ", but:" + button);
-        for(int i = 0; i < towers.size; ++i){
-            Tower tower = towers.get(i);
+        for(int i = 0; i < battleground.getTowers().size; ++i){
+            Tower tower = battleground.getTowers().get(i);
             if(tower.overlap(screenX, screenY)){
                 tower.setSelected(true);
                 break;
@@ -245,18 +233,24 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         screenY = 800 - screenY;
 //        System.out.println("x: " + screenX + ", y: " + screenY + ", point: " + pointer + ", but:" + button);
         Tower selected = null;
-        for(int i = 0; i < towers.size; ++i){
-            if(towers.get(i).isSelected()){
-                selected = towers.get(i);
+        for(int i = 0; i < battleground.getTowers().size; ++i){
+            if(battleground.getTowers().get(i).isSelected()){
+                selected = battleground.getTowers().get(i);
                 break;
             }
         }
         if(selected == null)
             return false;
         System.out.println("selected: " + selected.getId());
-        for(int i = 0; i < towers.size; ++i){
-            Tower tower = towers.get(i);
-            if(tower.overlap(screenX, screenY)){
+        for(int i = 0; i < battleground.getTowers().size; ++i){
+            Tower tower = battleground.getTowers().get(i);
+            if(tower != selected && tower.overlap(screenX, screenY)){
+                Battleground.PathResult pathResult =
+                        battleground.getShortestPath(selected.getId(), tower.getId());
+                if(pathResult.getDistance() == Integer.MAX_VALUE){
+                    System.out.println("no path");
+                    break;
+                }
                 if(tower.getId() == selected.getId()){
                     System.out.println("can't send to yourself");
                     break;

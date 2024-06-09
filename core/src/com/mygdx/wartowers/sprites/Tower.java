@@ -8,17 +8,15 @@ import com.mygdx.wartowers.utils.Constants;
 
 public class Tower  {
 
-    private Vector3 position;
-    private Texture tower;
-    private BitmapFont font;
+    private final Vector3 position;
+    private Texture towerTexture;
+    private final BitmapFont font;
 
     private final int id;
     private int level;
     private int owner;
-    private boolean changeOfOwner;
     private int amount;
-    private Warrior warrior;
-//    private Rectangle bounds;
+    private final Warrior warrior;
     private long lastWarriorsUpdateTime;
 
     private boolean selected;
@@ -35,19 +33,16 @@ public class Tower  {
 
 
 
-    public Tower(int x, int y, int id){
-        position = new Vector3(x, y, 0);
-//        tower = new Texture("towerGray1_res.png");
-
-        font = new BitmapFont();
-
-        warrior = new Warrior();
-        selected = changeOfOwner = false;
-        owner = ((id == 0) ? 1 : 0);
+    public Tower(int x, int y, int id, int owner, int level, int amount, int warriorKind){
+        this.position = new Vector3(x, y, 1);
+        this.font = new BitmapFont();
+        this.warrior = new Warrior(warriorKind);
+        this.selected = false;
+        this.owner = owner;
         this.id = id;
-        this.level = 0;
-        tower = new Texture(Constants.TowerSkins[owner][level]);
-        amount = 0;
+        this.level = level;
+        this.towerTexture = new Texture(Constants.TowerSkins[owner][level]);
+        this.amount = amount;
         capacity = new int[]{CAP1, CAP2};
         interval = new long[]{INTERVAL1, INTERVAL2};
         transferVal = new int[]{1, 2, 4};
@@ -56,8 +51,8 @@ public class Tower  {
 
 
     public void reloadTexture(){
-        tower.dispose();
-        tower = new Texture(Constants.TowerSkins[owner][level]);
+        towerTexture.dispose();
+        towerTexture = new Texture(Constants.TowerSkins[owner][level]);
     }
 
     public void upgradeTower(){
@@ -67,7 +62,13 @@ public class Tower  {
         reloadTexture();
     }
 
-    public void resetTower(){ }
+    public void setOwner(int owner){
+        this.owner = owner;
+    }
+
+    public void setAmount(int amount){
+        this.amount = amount;
+    }
 
     private boolean itISTime(boolean increase){
         if(TimeUtils.nanoTime() - lastWarriorsUpdateTime > ((increase) ? interval[level] : INTERVAL_DIE)){
@@ -87,9 +88,9 @@ public class Tower  {
 
     public boolean overlap(float x, float y){
 //        System.out.println("x: " + x + ", y: " + y + ", Tx: " + position.x + ", Ty:" + position.y);
-        if(position.x > x || position.x + tower.getWidth() < x)
+        if(position.x > x || position.x + towerTexture.getWidth() < x)
             return false;
-        if(position.y > y || position.y + tower.getHeight() < y)
+        if(position.y > y || position.y + towerTexture.getHeight() < y)
             return false;
 //        System.out.println("ok");
         return true;
@@ -147,8 +148,8 @@ public class Tower  {
         return id;
     }
 
-    public Texture getTower() {
-        return tower;
+    public Texture getTowerTexture() {
+        return towerTexture;
     }
 
     public BitmapFont getFont() {
@@ -163,6 +164,15 @@ public class Tower  {
         return amount;
     }
 
+    public int getOwner() {
+        return owner;
+    }
+
     public Warrior getWarrior() { return warrior;}
+
+    public void dispose() {
+        towerTexture.dispose();
+        font.dispose();
+    }
 }
 

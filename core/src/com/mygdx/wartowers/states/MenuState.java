@@ -38,14 +38,7 @@ public class MenuState extends State{
     }
 
     private Label[] fill_bestPlayersList(Skin skin){
-        // Add the list three elements to the bestPlayersList group and set their positions not to overlap and be in the center of the list
-//        Label bestPlayer1 = new Label("1. Player 1", skin);
-//        Label bestPlayer2 = new Label("2. Player 2", skin);
-//        Label bestPlayer3 = new Label("3. Player 3", skin);
-//        Label bestPlayer4 = new Label("3. Player 4", skin);
-//        Label bestPlayer5 = new Label("3. Player 5", skin);
         Label[] labels = new Label[25];
-        // in loop create and add 15 labels to the labels array
         for(int i = 0; i < 25; i++){
             labels[i] = new Label("" + i + ". Player " + i, skin);
         }
@@ -61,6 +54,8 @@ public class MenuState extends State{
         label.setSize(300, 200);
         label.setPosition((Constants.APP_WIDTH/2) - label.getWidth()/2, Constants.APP_HEIGHT * 8 / 10);
 
+
+        ////////////////////////////////////////////////////////////////
         TextButton button = new TextButton("PLAY", skin);
         button.setSize(200, 100);
         button.getLabel().setFontScale(2.0f, 2.0f);
@@ -72,6 +67,7 @@ public class MenuState extends State{
             }
         });
 
+        ////////////////////////////////////////////////////////////////
         Texture buttonTexture = new Texture(Gdx.files.internal("menub.png"));
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(buttonTexture));
         ImageButton menu_button = new ImageButton(buttonDrawable);
@@ -112,14 +108,10 @@ public class MenuState extends State{
 
         Texture backgroundTexture = new Texture(Gdx.files.internal("results_bg.jpg"));
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(backgroundTexture));
-        //set backgroundDrawable to scoreList as background
         scoresList.getStyle().background = backgroundDrawable;
-//        final Table table = new Table();
-//        table.setFillParent(true);
-//        table.add(scoresList).fill().expand();
 
-        scoresList.setVisible(false); // Hide the list by default
-        // Add a listener to the "Best players" button
+
+        scoresList.setVisible(false);
         bestPlayersButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -127,8 +119,7 @@ public class MenuState extends State{
             }
         });
 
-
-        // Create an input processor for touch events on the main menu stage
+        // Input processor for touch events on the main menu stage
         InputProcessor mainMenuInputProcessor = new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
