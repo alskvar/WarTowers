@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 
 public class Battleground {
     private final Array<Tower> towers;
-    private final Map<Integer, Array<Connection>> connections;
+    private final Map<Integer, Array<ConnectionGraph>> connections;
     private String backgroundImagePath;
 
     public Battleground(String jsonString) {
@@ -34,7 +34,7 @@ public class Battleground {
             int level = towerJson.getInt("level");
             Tower tower = new Tower(x, y, id, owner, level, troops, troopsType);
             towers.add(tower);
-            connections.put(id, new Array<Connection>());
+            connections.put(id, new Array<ConnectionGraph>());
         }
 
         JsonValue connectionsJson = root.get("connections");
@@ -42,8 +42,8 @@ public class Battleground {
             int from = connectionJson.getInt("from");
             int to = connectionJson.getInt("to");
             int weight = connectionJson.getInt("weight");
-            connections.get(from).add(new Connection(to, weight));
-            connections.get(to).add(new Connection(from, weight));
+            connections.get(from).add(new ConnectionGraph(to, weight));
+            connections.get(to).add(new ConnectionGraph(from, weight));
         }
 
         this.backgroundImagePath = root.getString("backgroundPath", "backgroundImages/play_bg_tmp.jpg");
@@ -57,7 +57,7 @@ public class Battleground {
 
     public PathResult getShortestPath(int fromTowerId, int toTowerId) {
         if (fromTowerId == toTowerId) {
-            return new PathResult(Integer.MAX_VALUE, new Array<Integer>());
+            return new PathResult(Integer.MAX_VALUE, new Array<ConnectionGraph>());
         }
 
         int n = towers.size;
@@ -80,10 +80,9 @@ public class Battleground {
             if (visited[current]) continue;
             visited[current] = true;
 
-            for (Connection conn : connections.get(current)) {
+            for (ConnectionGraph conn : connections.get(current)) {
                 if (conn.toTowerId != toTowerId &&
-                        towers.get(conn.toTowerId).getOwner()
-                                != towers.get(fromTowerId).getOwner()){
+                        towers.get(conn.toTowerId).getOwner() != towers.get(fromTowerId).getOwner()){
                     continue;
                 }
                 int neighbor = conn.toTowerId;
@@ -97,23 +96,29 @@ public class Battleground {
         }
 
         if (distances[toTowerId] == Integer.MAX_VALUE) {
-            return new PathResult(Integer.MAX_VALUE, new Array<Integer>());
+            return new PathResult(Integer.MAX_VALUE, new Array<ConnectionGraph>());
         }
 
-        Array<Integer> path = new Array<>();
+        Array<ConnectionGraph> path = new Array<>();
         for (int at = toTowerId; at != -1; at = previous[at]) {
-            path.add(at);
+            if (previous[at] != -1) {
+                int from = previous[at];
+                path.add(new ConnectionGraph(at, distances[at] - distances[from]));
+            } else{
+                path.add(new ConnectionGraph(at, 0));
+            }
         }
         path.reverse();
 
         return new PathResult(distances[toTowerId], path);
     }
 
-    private static class Connection {
+
+    protected static class ConnectionGraph {
         int toTowerId;
         int weight;
 
-        Connection(int toTowerId, int weight) {
+        ConnectionGraph(int toTowerId, int weight) {
             this.toTowerId = toTowerId;
             this.weight = weight;
         }
@@ -134,18 +139,20 @@ public class Battleground {
 
     public static class PathResult {
         int distance;
-        Array<Integer> path;
-        PathResult(int distance, Array<Integer> path) {
+        Array<ConnectionGraph> path;
+
+        PathResult(int distance, Array<ConnectionGraph> path) {
             this.distance = distance;
             this.path = path;
         }
         public int getDistance() {
             return distance;
         }
-        public Array<Integer> getPath() {
+        public Array<ConnectionGraph> getPath() {
             return path;
         }
     }
+
 
     public Array<Tower> getTowers() {
         return towers;
