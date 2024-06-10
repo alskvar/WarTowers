@@ -7,12 +7,14 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -31,7 +33,7 @@ public class MenuState extends State{
 //    public MenuState(GameStateManager gsm){
     public MenuState(GameStateManager gsm, DatabaseInterface dbInterface){
         super(gsm);
-        background = new Texture("menu_bg.jpg");
+        background = new Texture("backgroundImages/menu_bg.jpg");
 //        menub = new Texture("menub.png");
         set_stage();
         this.dbInterface = dbInterface;
@@ -79,14 +81,26 @@ public class MenuState extends State{
 //                gsm.set(new MenuState(gsm));
             }
         });
-        
+
+        ////////////////////////////////////////////////////////////////
+
+        // Create the settings subfield
+        final Table settingsTable = createSettingsSubfield(skin);
+        menu_button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                settingsTable.setVisible(!settingsTable.isVisible());
+            }
+        });
+
         ////////////////////////////////////////////////////////////////
 
         TextButton bestPlayersButton = new TextButton("Best Players", skin);
         bestPlayersButton.setSize(120, 80);
         bestPlayersButton.getLabel().setFontScale(0.6f, 0.6f);
         // Set the position of the button on the top right corner under the menu button
-        bestPlayersButton.setPosition(Constants.APP_WIDTH - bestPlayersButton.getWidth()-50, Constants.APP_HEIGHT - bestPlayersButton.getHeight() - menu_button.getHeight()-50);
+        bestPlayersButton.setPosition(Constants.APP_WIDTH/2 - bestPlayersButton.getWidth()/2,
+                Constants.APP_HEIGHT/2 - bestPlayersButton.getHeight()/2);
 
 
         ////////////////////////////////////////////////////////////////////
@@ -106,7 +120,7 @@ public class MenuState extends State{
         scoresList.setPosition(Constants.APP_WIDTH  / 2 - scoresList.getWidth() / 2, Constants.APP_HEIGHT / 2 - scoresList.getHeight() / 2);
 
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("results_bg.jpg"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("backgroundImages/results_bg.jpg"));
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(backgroundTexture));
         scoresList.getStyle().background = backgroundDrawable;
 
@@ -120,20 +134,20 @@ public class MenuState extends State{
         });
 
         // Input processor for touch events on the main menu stage
-        InputProcessor mainMenuInputProcessor = new InputAdapter() {
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                if (scoresList.isVisible()) {
-                    // Check if the touch is outside the list area
-                    if (screenX < scoresList.getX() || screenX > scoresList.getX() + scoresList.getWidth() ||
-                            screenY < scoresList.getY() || screenY > scoresList.getY() + scoresList.getHeight()) {
-                        scoresList.setVisible(false); // Hide the list
-                    }
-                }
-//                return super.touchDown(screenX, screenY, pointer, button);
-                return false;
-            }
-        };
+//        InputProcessor mainMenuInputProcessor = new InputAdapter() {
+//            @Override
+//            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+//                if (scoresList.isVisible()) {
+//                    // Check if the touch is outside the list area
+//                    if (screenX < scoresList.getX() || screenX > scoresList.getX() + scoresList.getWidth() ||
+//                            screenY < scoresList.getY() || screenY > scoresList.getY() + scoresList.getHeight()) {
+//                        scoresList.setVisible(false); // Hide the list
+//                    }
+//                }
+////                return super.touchDown(screenX, screenY, pointer, button);
+//                return false;
+//            }
+//        };
 
         ///////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////
@@ -145,10 +159,62 @@ public class MenuState extends State{
         stage.addActor(button);
         stage.addActor(menu_button);
         stage.addActor(scoresList);
-        Gdx.input.setInputProcessor(new InputMultiplexer(stage, mainMenuInputProcessor));
+        stage.addActor(settingsTable);
+
+        InputProcessor settingsInputProcessor = createTouchProcessor(settingsTable);
+        InputProcessor scrollInputProcessor = createTouchProcessor(scoresList);
+        Gdx.input.setInputProcessor(new InputMultiplexer(stage, settingsInputProcessor, scrollInputProcessor));
+
+//        Gdx.input.setInputProcessor(new InputMultiplexer(stage, mainMenuInputProcessor));
 //        Gdx.input.setInputProcessor(stage);
     }
 
+    private Table createSettingsSubfield(Skin skin) {
+        final Table settingsTable = new Table(skin);
+
+        // Music Volume Slider
+        Label musicLabel = new Label("Game Music", skin);
+        Slider musicSlider = new Slider(0, 1, 0.01f, false, skin);
+        // Set the initial value or from saved settings
+//        musicSlider.setValue(dbInterface.getMusicVolume());
+        musicSlider.setValue((float)0.5);
+
+        // Sound Effects Volume Slider
+        Label soundLabel = new Label("Sound Effects", skin);
+        Slider soundSlider = new Slider(0, 1, 0.01f, false, skin);
+        // Set the initial value or from saved settings
+//        soundSlider.setValue(dbInterface.getSoundVolume());
+        soundSlider.setValue((float)0.5);
+
+        // Exit Button
+        TextButton exitButton = new TextButton("Exit", skin);
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
+        settingsTable.add(musicLabel).pad(10);
+        settingsTable.row();
+        settingsTable.add(musicSlider).width(200).pad(10);
+        settingsTable.row();
+        settingsTable.add(soundLabel).pad(10);
+        settingsTable.row();
+        settingsTable.add(soundSlider).width(200).pad(10);
+        settingsTable.row();
+        settingsTable.add(exitButton).pad(10);
+
+        settingsTable.setSize(300, 400);
+        settingsTable.setPosition(Constants.APP_WIDTH / 2 - settingsTable.getWidth() / 2, Constants.APP_HEIGHT / 2 - settingsTable.getHeight() / 2);
+        settingsTable.setVisible(false); // Initially hidden
+
+        Texture backgroundTexture = new Texture(Gdx.files.internal("backgroundImages/results_bg.jpg"));
+        TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(backgroundTexture));
+        settingsTable.setBackground(backgroundDrawable);
+
+        return settingsTable;
+    }
 
     @Override
     protected void handleInput() {
@@ -176,4 +242,21 @@ public class MenuState extends State{
         stage.dispose();
 //        menub.dispose();
     }
+
+    protected InputProcessor createTouchProcessor(final Actor actorToHide) {
+        return new InputAdapter() {
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                if (actorToHide.isVisible()) {
+                    // Check if the touch is outside the area of the actor
+                    if (screenX < actorToHide.getX() || screenX > actorToHide.getX() + actorToHide.getWidth() ||
+                            screenY < actorToHide.getY() || screenY > actorToHide.getY() + actorToHide.getHeight()) {
+                        actorToHide.setVisible(false); // Hide the actor
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
 }
