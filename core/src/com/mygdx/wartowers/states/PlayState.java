@@ -45,8 +45,8 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         carriages = new ArrayList<>();
         bg = new Texture(battleground.getBackgroundImagePath());
         stage = new Stage(new ScreenViewport());
-        gestureDetector = new GestureDetector(this);
         doubleTapDetected = false;
+        gestureDetector = new GestureDetector(this);
         Gdx.input.setInputProcessor(new InputMultiplexer(this, gestureDetector));
     }
 
@@ -105,9 +105,12 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
+        Gdx.app.log("xY tap", "Xh: " + x + ", Y: " + y);
         y = Constants.APP_HEIGHT - y;
+        Gdx.app.log("doubleTaP", "Now: " + doubleTapDetected);
         if (doubleTapDetected) {
             System.out.println("Double tap detected!");
+            Gdx.app.log("doubleTaP", "Boolean: " + doubleTapDetected);
             for(int i = 0; i < battleground.getTowers().size; ++i) {
                 Tower tower = battleground.getTowers().get(i);
                 if (tower.overlap(x, y)) {
@@ -117,9 +120,12 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             }
             doubleTapDetected = false;
         }else {
+            Gdx.app.log("doubleTaP", "NowChangeFromBoolean: " + doubleTapDetected);
             doubleTapDetected = true;
+            Gdx.app.log("doubleTaP", "ChangedToBoolean: " + doubleTapDetected);
+
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -228,7 +234,6 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        doubleTapDetected = false;
         return false;
     }
 

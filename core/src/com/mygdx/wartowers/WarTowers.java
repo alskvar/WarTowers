@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.wartowers.states.GameStateManager;
 import com.mygdx.wartowers.states.MenuState;
+import com.mygdx.wartowers.utils.Constants;
 
 
 public class WarTowers extends Game {
@@ -25,10 +26,16 @@ public class WarTowers extends Game {
 		gsm = new GameStateManager();
 		ScreenUtils.clear(1, 0, 0, 1);
 
-		dbInterface.addScore("Pan", 8);
-		dbInterface.addScore("Pan2", 8);
-		ScoreEntry s = dbInterface.getScore("Pan2");
-		System.out.println(s.getId());
+		int screenWidth = Gdx.graphics.getWidth();
+		int screenHeight = Gdx.graphics.getHeight();
+		Constants.APP_WIDTH = screenWidth;
+		Constants.APP_HEIGHT = screenHeight;
+
+		Gdx.app.log("Screen Size", "Width: " + screenWidth + ", Height: " + screenHeight);
+//		dbInterface.addScore("Pan", 8);
+//		dbInterface.addScore("Pan2", 8);
+//		ScoreEntry s = dbInterface.getScore("Pan2");
+//		System.out.println(s.getId());
 		gsm.push(new MenuState(gsm, dbInterface));
 
 	}

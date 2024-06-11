@@ -1,5 +1,6 @@
 package com.mygdx.wartowers.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector3;
@@ -41,7 +42,12 @@ public class Tower  {
         this.owner = owner;
         this.id = id;
         this.level = level;
-        this.towerTexture = new Texture(Constants.TowerSkins[owner][level]);
+        if (Gdx.files.internal(Constants.TowerSkins[owner][level]).exists()) {
+            Gdx.app.log("Asset Check", "File exists: " + Constants.TowerSkins[owner][level]);
+            this.towerTexture = new Texture(Constants.TowerSkins[owner][level]);
+        } else {
+            Gdx.app.log("Asset Check", "File does not exist: " + Constants.TowerSkins[owner][level]);
+        }
         this.amount = amount;
         capacity = new int[]{CAP1, CAP2};
         interval = new long[]{INTERVAL1, INTERVAL2};
