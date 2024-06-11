@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.wartowers.DatabaseInterface;
+import com.mygdx.wartowers.Database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.Battleground;
 import com.mygdx.wartowers.sprites.Carriage;
 import com.mygdx.wartowers.sprites.Tower;
@@ -34,10 +34,10 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     private final Random random;
     private final ArrayList<Carriage> carriages;
     private ImageButton menuButton;
-    protected DatabaseInterface dbInterface;
+    protected FireStoreInterface dbInterface;
 
 
-    public PlayState(GameStateManager gsm, DatabaseInterface dbInterface) {
+    public PlayState(GameStateManager gsm, FireStoreInterface dbInterface) {
         super(gsm);
         random = new Random();
         this.dbInterface = dbInterface;

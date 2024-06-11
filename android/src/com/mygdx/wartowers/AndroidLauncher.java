@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.mygdx.wartowers.WarTowers;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
@@ -13,6 +12,6 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = false;
 		config.useCompass = false;
-		initialize(new WarTowers(), config);
+		initialize(new WarTowers(new AndroidDBInterfaceClass()), config);
 	}
 }

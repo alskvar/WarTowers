@@ -21,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.wartowers.DatabaseInterface;
+import com.mygdx.wartowers.Database.FireStoreInterface;
 import com.mygdx.wartowers.utils.Constants;
 
 public class MenuState extends State{
@@ -29,10 +29,10 @@ public class MenuState extends State{
 //    private Stage stage;
     private Texture background;
     private Texture menub;
-    protected DatabaseInterface dbInterface;
+    protected FireStoreInterface dbInterface;
 
 //    public MenuState(GameStateManager gsm){
-    public MenuState(GameStateManager gsm, DatabaseInterface dbInterface){
+    public MenuState(GameStateManager gsm, FireStoreInterface dbInterface){
         super(gsm);
         inputProcessors = new Array<InputProcessor>();
         background = new Texture("backgroundImages/menu_bg.jpg");

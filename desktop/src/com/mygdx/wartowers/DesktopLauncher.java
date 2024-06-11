@@ -13,8 +13,8 @@ public class DesktopLauncher {
 
 		config.setTitle(Constants.APP_TITLE);
 
-		DatabaseHelper dbHelper = new DatabaseHelper();
-		dbHelper.createTableIfNotExist();
+		DesktopBDInterfaceClass dbHelper = new DesktopBDInterfaceClass();
+//		dbHelper.createTableIfNotExist();
 
 		new Lwjgl3Application(new WarTowers(dbHelper), config);
 	}

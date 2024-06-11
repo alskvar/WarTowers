@@ -4,7 +4,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.wartowers.Database.DataHolderClass;
+import com.mygdx.wartowers.Database.FireStoreInterface;
+import com.mygdx.wartowers.sprites.BattleResult;
+import com.mygdx.wartowers.sprites.PlayerData;
 import com.mygdx.wartowers.states.GameStateManager;
 import com.mygdx.wartowers.states.MenuState;
 import com.mygdx.wartowers.utils.Constants;
@@ -13,11 +18,11 @@ import com.mygdx.wartowers.utils.Constants;
 public class WarTowers extends Game {
 	SpriteBatch batch;
 	GameStateManager gsm;
-	DatabaseInterface dbInterface;
+	FireStoreInterface dbInterface;
 
 	public WarTowers() {
 	}
-	public WarTowers(DatabaseInterface dbInterface) {
+	public WarTowers(FireStoreInterface dbInterface) {
 		this.dbInterface = dbInterface;
 	}
 	@Override
@@ -32,12 +37,41 @@ public class WarTowers extends Game {
 		Constants.APP_HEIGHT = screenHeight;
 
 		Gdx.app.log("Screen Size", "Width: " + screenWidth + ", Height: " + screenHeight);
-//		dbInterface.addScore("Pan", 8);
-//		dbInterface.addScore("Pan2", 8);
-//		ScoreEntry s = dbInterface.getScore("Pan2");
-//		System.out.println(s.getId());
-		gsm.push(new MenuState(gsm, dbInterface));
 
+		testDBFunction();
+
+		gsm.push(new MenuState(gsm, dbInterface));
+	}
+
+	private void testDBFunction(){
+//		dbInterface.addPlayer(new PlayerData("Sasha", 4, 7));
+		BattleResult btr = new BattleResult("Sasha", "Kesha", "Sasha");
+		dbInterface.updateBattleResult(btr);
+
+		PlayerData playerData = new PlayerData();
+//		dbInterface.getPlayerStats("Sasha", playerData);
+		DataHolderClass dataHolder = new DataHolderClass();
+		dbInterface.getTopPlayers(dataHolder);
+		try {
+			// Sleep for 3 seconds (3000 milliseconds)
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// Handle interrupted exception
+			e.printStackTrace();
+		}
+		Array<PlayerData> playerDataArray = dataHolder.getPlayerDataArray();
+		for (PlayerData pd : playerDataArray) {
+			System.out.println(pd.getName() + "  wins: " + pd.getWins() + "   total: " + pd.getGamesPlayed());
+		}
+		try {
+			// Sleep for 3 seconds (3000 milliseconds)
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// Handle interrupted exception
+			e.printStackTrace();
+		}
+
+		System.out.println(playerData.getName() + " wins" + playerData.getWins() + " total" + playerData.getGamesPlayed());
 	}
 
 	@Override
@@ -50,5 +84,9 @@ public class WarTowers extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
+	}
+
+	public interface PlayerDataCallback {
+		void onCallback(PlayerData playerData);
 	}
 }

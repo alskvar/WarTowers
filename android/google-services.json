@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "920352365348",
+    "firebase_url": "https://wartowers-58a10-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "wartowers-58a10",
+    "storage_bucket": "wartowers-58a10.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920352365348:android:e5a8658fa9e053963a31b1",
+        "android_client_info": {
+          "package_name": "com.mygdx.wartowers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "920352365348-djcnd03gme5sctl7o6l9nj6lgvcqolno.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFLAmFc9PIa3wVw4uysweLIYfgEQ1Xojo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "920352365348-djcnd03gme5sctl7o6l9nj6lgvcqolno.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
