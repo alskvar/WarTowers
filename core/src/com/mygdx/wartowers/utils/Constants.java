@@ -5,6 +5,7 @@ public class Constants {
     public static final int APP_WIDTH = 480;
     public static final int APP_HEIGHT = 800;
     public static final String BATTLEGROUND_JSON_PATH = "BattlegroundPresets/preset1.json";
+    public static final String SKIN_COSMIC_PATH = "font_skins/comic/comic-ui.json";
 
     public static final String APP_TITLE = "War Towers";
 

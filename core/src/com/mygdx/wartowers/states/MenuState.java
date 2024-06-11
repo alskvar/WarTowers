@@ -19,20 +19,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.wartowers.DatabaseInterface;
 import com.mygdx.wartowers.utils.Constants;
 
 public class MenuState extends State{
 
-    private Stage stage;
+//    private Stage stage;
     private Texture background;
     private Texture menub;
-    private DatabaseInterface dbInterface;
+    protected DatabaseInterface dbInterface;
 
 //    public MenuState(GameStateManager gsm){
     public MenuState(GameStateManager gsm, DatabaseInterface dbInterface){
         super(gsm);
+        inputProcessors = new Array<InputProcessor>();
         background = new Texture("backgroundImages/menu_bg.jpg");
 //        menub = new Texture("menub.png");
         set_stage();
@@ -47,8 +49,17 @@ public class MenuState extends State{
         return labels;
     }
 
+    protected void activateStagesInputProcessor(){
+        InputMultiplexer multiplexer = new InputMultiplexer();
+
+        // Iterate over the actors and add their input processors to the multiplexer
+        for (InputProcessor inputProcessor: inputProcessors) {
+            multiplexer.addProcessor(inputProcessor);
+        }
+        Gdx.input.setInputProcessor(multiplexer);
+    }
     private void set_stage(){
-        Skin skin = new Skin(Gdx.files.internal("font_skins/comic/comic-ui.json"));
+        Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
         Skin skin_def = new Skin(Gdx.files.internal("font_skins/default/uiskin.json"));
 
         Label label = new Label("WAR TOWERS", skin_def);
@@ -65,7 +76,9 @@ public class MenuState extends State{
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gsm.set(new PlayState(gsm));
+//                gsm.set(new PlayState(gsm));
+                gsm.push(new PlayState(gsm, dbInterface));
+//                gsm.push(new BattleResultState(gsm, "Sasha"));
             }
         });
 
@@ -161,12 +174,14 @@ public class MenuState extends State{
         stage.addActor(scoresList);
         stage.addActor(settingsTable);
 
-        InputProcessor settingsInputProcessor = createTouchProcessor(settingsTable);
-        InputProcessor scrollInputProcessor = createTouchProcessor(scoresList);
-        Gdx.input.setInputProcessor(new InputMultiplexer(stage, settingsInputProcessor, scrollInputProcessor));
+        InputProcessor settingsInputProcessor = createMenuWindowTouchProcessor(settingsTable);
+        InputProcessor scrollInputProcessor = createMenuWindowTouchProcessor(scoresList);
 
-//        Gdx.input.setInputProcessor(new InputMultiplexer(stage, mainMenuInputProcessor));
-//        Gdx.input.setInputProcessor(stage);
+        inputProcessors.add(settingsInputProcessor);
+        inputProcessors.add(scrollInputProcessor);
+        inputProcessors.add(stage);
+
+        activateStagesInputProcessor();
     }
 
     private Table createSettingsSubfield(Skin skin) {
@@ -243,7 +258,7 @@ public class MenuState extends State{
 //        menub.dispose();
     }
 
-    protected InputProcessor createTouchProcessor(final Actor actorToHide) {
+    public static InputProcessor createMenuWindowTouchProcessor(final Actor actorToHide) {
         return new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -257,6 +272,10 @@ public class MenuState extends State{
                 return false;
             }
         };
+    }
+
+    public Stage getStage(){
+        return stage;
     }
 
 }

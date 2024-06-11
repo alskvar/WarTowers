@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.wartowers.DatabaseInterface;
 import com.mygdx.wartowers.sprites.Battleground;
 import com.mygdx.wartowers.sprites.Carriage;
 import com.mygdx.wartowers.sprites.Tower;
@@ -26,16 +28,19 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     private final GestureDetector gestureDetector;
     private boolean doubleTapDetected;
 
-    private final Stage stage;
+//    private final Stage stage;
     private final Battleground battleground;
     private final Texture bg;
     private final Random random;
     private final ArrayList<Carriage> carriages;
+    private ImageButton menuButton;
+    protected DatabaseInterface dbInterface;
 
-    public PlayState(GameStateManager gsm){
+
+    public PlayState(GameStateManager gsm, DatabaseInterface dbInterface) {
         super(gsm);
         random = new Random();
-
+        this.dbInterface = dbInterface;
         battleground = new Battleground(loadJsonFromFile(Constants.BATTLEGROUND_JSON_PATH));
         carriages = new ArrayList<>();
         bg = new Texture(battleground.getBackgroundImagePath());
@@ -45,7 +50,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         Gdx.input.setInputProcessor(new InputMultiplexer(this, gestureDetector));
     }
 
-    public static String loadJsonFromFile(String filePath) {
+    private static String loadJsonFromFile(String filePath) {
         FileHandle fileHandle = Gdx.files.internal(filePath);
         return fileHandle.readString();
     }
@@ -57,12 +62,16 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     @Override
     public void update(float dt) {
         battleground.updateTowers(dt);
+        if(battleground.checkIsGameOver()){
+            gsm.set(new BattleResultState(gsm, "Sasha"));
+            return;
+        }
         for (Iterator<Carriage> iterator = carriages.iterator(); iterator.hasNext();) {
             Carriage carriage = iterator.next();
             carriage.update(dt, battleground.getTowers());
             if (carriage.hasReachedDestination()) {
                 battleground.getTowers().get(carriage.getDestination()).transferIn(carriage.getInfo());
-                iterator.remove();
+                iterator.remove();  // Safe removal
             }
         }
     }
@@ -80,8 +89,6 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             carriage.render(sb);
         }
         sb.end();
-//        stage.act();
-//        stage.draw();
     }
 
     @Override
@@ -98,7 +105,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        y = 800 - y;
+        y = Constants.APP_HEIGHT - y;
         if (doubleTapDetected) {
             System.out.println("Double tap detected!");
             for(int i = 0; i < battleground.getTowers().size; ++i) {
@@ -109,7 +116,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
                 }
             }
             doubleTapDetected = false;
-        } else {
+        }else {
             doubleTapDetected = true;
         }
         return true;
@@ -168,7 +175,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        screenY = 800 - screenY;
+        screenY = Constants.APP_HEIGHT - screenY;
 //        System.out.println("point: " + pointer);
 //        System.out.println("x: " + screenX + ", y: " + screenY + ", point: " + pointer + ", but:" + button);
         for(int i = 0; i < battleground.getTowers().size; ++i){
@@ -183,7 +190,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        screenY = 800 - screenY;
+        screenY = Constants.APP_HEIGHT - screenY;
 //        System.out.println("x: " + screenX + ", y: " + screenY + ", point: " + pointer + ", but:" + button);
         Tower selected = null;
         for(int i = 0; i < battleground.getTowers().size; ++i){
@@ -233,6 +240,11 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     @Override
     public boolean scrolled(float amountX, float amountY) {
         return false;
+    }
+
+    @Override
+    public void activateStagesInputProcessor() {
+        Gdx.input.setInputProcessor(new InputMultiplexer(this, gestureDetector));
     }
 
 }

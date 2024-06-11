@@ -12,10 +12,12 @@ public class Battleground {
     private final Array<Tower> towers;
     private final Map<Integer, Array<ConnectionGraph>> connections;
     private String backgroundImagePath;
+    private int winner;
 
     public Battleground(String jsonString) {
         this.towers = new Array<>();
         this.connections = new HashMap<>();
+        this.winner = -1;
         parseJson(jsonString);
     }
 
@@ -170,6 +172,25 @@ public class Battleground {
         // Clear the towers and connections
         towers.clear();
         connections.clear();
+    }
+
+    public boolean checkIsGameOver() {
+        int ownerPlayer = -1;
+        for (Tower tower : towers) {
+            if (tower.getOwner() != 0) {
+                if(ownerPlayer == -1) {
+                    ownerPlayer = tower.getOwner();
+                } else if (tower.getOwner() != ownerPlayer) {
+                    return false;
+                }
+            }
+        }
+        winner = ownerPlayer;
+        return true;
+    }
+
+    public int getWinner() {
+        return winner;
     }
 }
 
