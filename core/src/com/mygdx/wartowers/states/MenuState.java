@@ -81,8 +81,20 @@ public class MenuState extends State{
         }
         Gdx.input.setInputProcessor(multiplexer);
     }
+
+    private Table updateScoresList(Skin skin){
+        Table scrollTable = new Table(skin);
+        scrollTable.clear();
+        Label[] scores = fill_bestPlayersList(skin);
+        for(Label curLabel : scores){
+            scrollTable.add(curLabel);
+            scrollTable.row();
+        }
+        return scrollTable;
+    }
+
     private void set_stage(){
-        Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
+        final Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
         Skin skin_def = new Skin(Gdx.files.internal("font_skins/default/uiskin.json"));
 
         Label label = new Label("WAR TOWERS", skin_def);
@@ -144,14 +156,7 @@ public class MenuState extends State{
         ////////////////////////////////////////////////////////////////////
         // Create the list of "Best players"
 
-        Table scrollTable = new Table(skin);
-        Label[] scores = fill_bestPlayersList(skin);
-        for(Label curLabel : scores){
-            scrollTable.add(curLabel);
-            scrollTable.row();
-        }
-
-        final ScrollPane scoresList = new ScrollPane(scrollTable);
+        final ScrollPane scoresList = new ScrollPane(updateScoresList(skin));
         scoresList.setHeight(Constants.APP_HEIGHT/2);
         scoresList.setWidth(Constants.APP_WIDTH / 2);
         scoresList.setPosition(Constants.APP_WIDTH  / 2 - scoresList.getWidth() / 2, Constants.APP_HEIGHT / 2 - scoresList.getHeight() / 2);
@@ -165,6 +170,7 @@ public class MenuState extends State{
         bestPlayersButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                scoresList.setWidget(updateScoresList(skin));
                 scoresList.setVisible(!scoresList.isVisible());
             }
         });

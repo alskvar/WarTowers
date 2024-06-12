@@ -9,10 +9,15 @@ public class Constants {
 
     public static final String APP_TITLE = "War Towers";
 
+//    public static final String[][] TowerSkins = {
+//            {"towers/towerGray1_res.png", "towers/towerGray2.png"},
+//            {"towers/towerBlue1_res.png", "towers/towerBlue2_res.png"},
+//            {"towers/TowerRed1_res.png", "towers/TowerRed2_res.png"},};
+
     public static final String[][] TowerSkins = {
-            {"towers/towerGray1_res.png", "towers/towerGray2.png"},
-            {"towers/towerBlue1_res.png", "towers/towerBlue2_res.png"},
-            {"towers/TowerRed1_res.png", "towers/TowerRed2_res.png"},};
+            {"towers/TowerGray0_res.png", "towers/TowerGrayUp_res.png"},
+            {"towers/TowerBlue0_res.png", "towers/TowerBlueUp_res.png"},
+            {"towers/TowerRed0_res.png", "towers/TowerRedUp_res.png"},};
 
     public static final int[] warriors_defence = {3, 2};
     public static final int[] warriors_attack = {2, 3};
