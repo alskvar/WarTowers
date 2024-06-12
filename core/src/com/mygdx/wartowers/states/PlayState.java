@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.wartowers.Database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.Battleground;
@@ -33,8 +32,11 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     private final Texture bg;
     private final Random random;
     private final ArrayList<Carriage> carriages;
-    private ImageButton menuButton;
     protected FireStoreInterface dbInterface;
+    private float lastGyroX;
+    private float lastGyroY;
+    private float lastGyroZ;
+    private float gyroscopeTimeout;
 
 
     public PlayState(GameStateManager gsm, FireStoreInterface dbInterface) {
@@ -47,6 +49,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         stage = new Stage(new ScreenViewport());
         doubleTapDetected = false;
         gestureDetector = new GestureDetector(this);
+        this.lastGyroY = this.lastGyroX = this.lastGyroZ = 0;
         Gdx.input.setInputProcessor(new InputMultiplexer(this, gestureDetector));
     }
 
@@ -57,6 +60,33 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     protected void handleInput() {
+    }
+
+    private void updateGyroscope(float dt){
+        float currentGyroX = Gdx.input.getGyroscopeX();
+        float currentGyroY = Gdx.input.getGyroscopeY();
+        float currentGyroZ = Gdx.input.getGyroscopeZ();
+
+        if (gyroscopeTimeout > 0) {
+            gyroscopeTimeout -= dt;
+            if (gyroscopeTimeout < 0) {
+                gyroscopeTimeout = 0;
+            }
+        }
+
+        // Check if the gyroscope has rotated on Y
+        if (Math.abs(currentGyroZ - lastGyroZ) > 1.0f) {
+            if (gyroscopeTimeout == 0) {
+                gyroscopeTimeout = 3.0f;
+                if (currentGyroY - lastGyroZ > 0)
+                    System.out.println("Gyroscope rotation detected on right");
+                else
+                    System.out.println("Gyroscope rotation detected on left");
+            }
+        }
+        lastGyroX = currentGyroX;
+        lastGyroY = currentGyroY;
+        lastGyroZ = currentGyroZ;
     }
 
     @Override
@@ -74,6 +104,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
                 iterator.remove();  // Safe removal
             }
         }
+        updateGyroscope(dt);
     }
 
     @Override

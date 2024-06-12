@@ -4,6 +4,7 @@
     package="com.mygdx.wartowers">
 
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+    <uses-permission android:name="android.permission.BODY_SENSORS"/>
 
     <application
         android:allowBackup="true"
