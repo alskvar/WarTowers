@@ -35,8 +35,6 @@ public class Tower  {
     public final long INTERVAL2 = 700000000;
     public final long INTERVAL_DIE = 1000000000;
 
-
-
     public Tower(int x, int y, int id, int owner, int level, int amount, int warriorKind){
         this.font = new BitmapFont();
         font.getData().scale(1.3f);

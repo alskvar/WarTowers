@@ -12,8 +12,9 @@ public class Carriage {
     private final int destination;
     private final Array<Battleground.ConnectionGraph> path;
     private int numberOfPassedTowers;
-    private int[] info;
+    private final int[] info;
     private final BitmapFont font;
+    private float remainingTimeToHide;
 
     private final Vector3 currentPosition;
     private final Vector3 direction;
@@ -33,7 +34,8 @@ public class Carriage {
         this.remainingDistanceToNextTower = -1;
 
         this.font = new BitmapFont();
-        font.getData().scale(1.1f);
+        this.remainingTimeToHide = 0;
+        font.getData().scale(1.3f);
         font.getData().markupEnabled = true;
         font.setColor(Constants.playerColors[owner]);
     }
@@ -72,9 +74,23 @@ public class Carriage {
         return info;
     }
 
-    public void update(float dt, Array<Tower> towers) {
+    public void update(float dt, Array<Tower> towers, final boolean hide, final boolean catastropheIsNow) {
         if (hasReachedDestination()) {
             return;
+        }
+//        System.out.println("Carriage update  " + dt);
+        if (hide) {
+            System.out.println("Carriage hide");
+            remainingTimeToHide = Constants.CARRIAGE_HIDE_TIME;
+            return;
+        }
+        if (remainingTimeToHide > 0f) {
+            System.out.println("Carriage hide time " + remainingTimeToHide);
+            remainingTimeToHide = Math.max(0f, remainingTimeToHide - dt);
+            return;
+        }
+        if (catastropheIsNow && remainingTimeToHide == 0f) {
+            damage(Constants.damagedPart[1]);
         }
 
         // Update direction and remaining distance if moving to the next tower
@@ -99,7 +115,7 @@ public class Carriage {
     public void render(SpriteBatch sb) {
         sb.draw(warrior.getTexture(), currentPosition.x - warrior.getTexture().getWidth()/2.0f, currentPosition.y);
         String amountText = "" + getAmount();
-        font.draw(sb, amountText, currentPosition.x - warrior.getTexture().getWidth()/2.0f, currentPosition.y + warrior.getTexture().getHeight() + 15);
+        font.draw(sb, amountText, currentPosition.x - warrior.getTexture().getWidth()/2.0f + 5, currentPosition.y + warrior.getTexture().getHeight() + 25);
     }
 
     public int getAmount() {
@@ -111,7 +127,7 @@ public class Carriage {
             if (info[0] == 1){
                 info[0] = 0;
             }else{
-                info[0] = (int) (info[0] * damage);
+                info[0] -= (int) (info[0] * damage);
             }
         }
     }

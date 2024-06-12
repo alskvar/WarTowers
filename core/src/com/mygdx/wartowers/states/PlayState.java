@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.wartowers.Database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.Battleground;
 import com.mygdx.wartowers.sprites.Carriage;
+import com.mygdx.wartowers.sprites.Catastrophe;
 import com.mygdx.wartowers.sprites.Tower;
 import com.mygdx.wartowers.utils.Constants;
 
@@ -36,6 +37,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     private float lastGyroY;
     private float lastGyroZ;
     private float gyroscopeTimeout;
+    private final Catastrophe catastrophe;
 
     private final Skin skin;
 
@@ -43,6 +45,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     public PlayState(GameStateManager gsm, FireStoreInterface dbInterface) {
         super(gsm);
         random = new Random();
+        catastrophe = new Catastrophe();
         this.dbInterface = dbInterface;
         battleground = new Battleground(loadJsonFromFile(Constants.BATTLEGROUND_JSON_PATH));
         carriages = new ArrayList<>();
@@ -64,7 +67,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     protected void handleInput() {
     }
 
-    private void updateGyroscope(float dt){
+    private boolean updateGyroscope(float dt){
         float currentGyroX = Gdx.input.getGyroscopeX();
         float currentGyroY = Gdx.input.getGyroscopeY();
         float currentGyroZ = Gdx.input.getGyroscopeZ();
@@ -76,10 +79,12 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             }
         }
 
+        boolean result = false;
         // Check if the gyroscope has rotated on Y
         if (Math.abs(currentGyroZ - lastGyroZ) > 1.0f) {
             if (gyroscopeTimeout == 0) {
                 gyroscopeTimeout = 3.0f;
+                result = true;
                 if (currentGyroY - lastGyroZ > 0)
                     System.out.println("Gyroscope rotation detected on right");
                 else
@@ -89,6 +94,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         lastGyroX = currentGyroX;
         lastGyroY = currentGyroY;
         lastGyroZ = currentGyroZ;
+        return result;
     }
 
     @Override
@@ -98,15 +104,21 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             gsm.set(new BattleResultState(gsm, "Sasha"));
             return;
         }
+        catastrophe.update(dt);
+        final boolean gyroscopeResult = updateGyroscope(dt);
+        final boolean eventHasStarted = catastrophe.isEventHasStarted();
         for (Iterator<Carriage> iterator = carriages.iterator(); iterator.hasNext();) {
             Carriage carriage = iterator.next();
-            carriage.update(dt, battleground.getTowers());
+            carriage.update(dt, battleground.getTowers(), gyroscopeResult, eventHasStarted);
+            if (carriage.getAmount() == 0){
+                iterator.remove();
+                continue;
+            }
             if (carriage.hasReachedDestination()) {
                 battleground.getTowers().get(carriage.getDestination()).transferIn(carriage.getInfo());
-                iterator.remove();  // Safe removal
+                iterator.remove();
             }
         }
-        updateGyroscope(dt);
     }
 
     @Override
@@ -119,6 +131,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         for (Carriage carriage : carriages) {
             carriage.render(sb);
         }
+        catastrophe.render(sb);
         sb.end();
     }
 
@@ -127,6 +140,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         bg.dispose();
         stage.dispose();
         battleground.dispose();
+        catastrophe.dispose();
     }
 
     @Override
@@ -213,8 +227,6 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         screenY = (int)Constants.APP_HEIGHT - screenY;
-//        System.out.println("point: " + pointer);
-//        System.out.println("x: " + screenX + ", y: " + screenY + ", point: " + pointer + ", but:" + button);
         for(int i = 0; i < battleground.getTowers().size; ++i){
             Tower tower = battleground.getTowers().get(i);
             if(tower.overlap(screenX, screenY)){

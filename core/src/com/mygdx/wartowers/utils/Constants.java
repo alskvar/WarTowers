@@ -6,15 +6,11 @@ import com.badlogic.gdx.graphics.Color;
 public class Constants {
     public static float APP_WIDTH = 480;
     public static float APP_HEIGHT = 800;
+    public static final float CARRIAGE_HIDE_TIME = 2;
     public static final String BATTLEGROUND_JSON_PATH = "BattlegroundPresets/preset1.json";
     public static final String SKIN_COSMIC_PATH = "font_skins/comic/comic-ui.json";
 
     public static final String APP_TITLE = "War Towers";
-
-//    public static final String[][] TowerSkins = {
-//            {"towers/towerGray1_res.png", "towers/towerGray2.png"},
-//            {"towers/towerBlue1_res.png", "towers/towerBlue2_res.png"},
-//            {"towers/TowerRed1_res.png", "towers/TowerRed2_res.png"},};
 
     public static final String[][] TowerSkins = {
             {"towers/TowerGray0_res.png", "towers/TowerGrayUp_res.png"},
@@ -27,11 +23,13 @@ public class Constants {
 
     public static final String[] warriors_names = {"shield-bearer", "assassin"};
 
-    //set colors for each player
+
     public static final Color[] playerColors = {
             new Color(0.5f, 0.5f, 0.5f, 1),
             new Color(0, 0, 1, 1),
             new Color(1, 0, 0, 1)
     };
+
+    public static final float[] damagedPart = {0.2f, 0.3f, 0.5f};
 
 }
