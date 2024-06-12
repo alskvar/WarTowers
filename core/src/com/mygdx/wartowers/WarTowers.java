@@ -38,7 +38,7 @@ public class WarTowers extends Game {
 
 		Gdx.app.log("Screen Size", "Width: " + screenWidth + ", Height: " + screenHeight);
 
-		testDBFunction();
+//		testDBFunction();
 
 		gsm.push(new MenuState(gsm, dbInterface));
 	}
@@ -47,14 +47,20 @@ public class WarTowers extends Game {
 //		dbInterface.addPlayer(new PlayerData("Sasha", 4, 7));
 		BattleResult btr = new BattleResult("Sasha", "Kesha", "Sasha");
 		dbInterface.updateBattleResult(btr);
-
+		try {
+			// Sleep for 3 seconds (3000 milliseconds)
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// Handle interrupted exception
+			e.printStackTrace();
+		}
 		PlayerData playerData = new PlayerData();
 //		dbInterface.getPlayerStats("Sasha", playerData);
 		DataHolderClass dataHolder = new DataHolderClass();
-		dbInterface.getTopPlayers(dataHolder);
+//		dbInterface.getTopPlayers(dataHolder);
 		try {
 			// Sleep for 3 seconds (3000 milliseconds)
-			Thread.sleep(3000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			// Handle interrupted exception
 			e.printStackTrace();
@@ -65,7 +71,7 @@ public class WarTowers extends Game {
 		}
 		try {
 			// Sleep for 3 seconds (3000 milliseconds)
-			Thread.sleep(3000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			// Handle interrupted exception
 			e.printStackTrace();

@@ -13,6 +13,7 @@ import com.mygdx.wartowers.Database.DataHolderClass;
 import com.mygdx.wartowers.Database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.BattleResult;
 import com.mygdx.wartowers.sprites.PlayerData;
+import com.mygdx.wartowers.states.MenuState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +52,7 @@ public class AndroidDBInterfaceClass implements FireStoreInterface {
     }
 
     @Override
-    public void getTopPlayers(final DataHolderClass dataHolder) {
+    public void getTopPlayers(final MenuState.OnPlayersFetchedListener listener) {
         playersDocRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -90,9 +91,12 @@ public class AndroidDBInterfaceClass implements FireStoreInterface {
                     playerList = playerList.subList(0, 100);
                 }
 
+                DataHolderClass dataHolder = new DataHolderClass();
                 for(PlayerData player : playerList){
                     dataHolder.addPlayerData(player);
                 }
+
+                listener.onPlayersFetched(dataHolder.getPlayerDataArray());
             }
         })
         .addOnFailureListener(new OnFailureListener() {

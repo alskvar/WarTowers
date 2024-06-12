@@ -21,8 +21,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.wartowers.Database.DataHolderClass;
 import com.mygdx.wartowers.Database.FireStoreInterface;
+import com.mygdx.wartowers.sprites.PlayerData;
 import com.mygdx.wartowers.utils.Constants;
+
+import java.util.concurrent.CountDownLatch;
 
 public class MenuState extends State{
 
@@ -37,14 +41,33 @@ public class MenuState extends State{
         inputProcessors = new Array<InputProcessor>();
         background = new Texture("backgroundImages/menu_bg.jpg");
 //        menub = new Texture("menub.png");
-        set_stage();
         this.dbInterface = dbInterface;
+        set_stage();
     }
 
     private Label[] fill_bestPlayersList(Skin skin){
-        Label[] labels = new Label[25];
-        for(int i = 0; i < 25; i++){
-            labels[i] = new Label("" + i + ". Player " + i, skin);
+        final DataHolderClass dataHolder = new DataHolderClass();
+        final CountDownLatch latch = new CountDownLatch(1);
+        dbInterface.getTopPlayers(new OnPlayersFetchedListener() {
+            @Override
+            public void onPlayersFetched(Array<PlayerData> players) {
+                dataHolder.setPlayerDataArray(players);
+                latch.countDown();
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Array<PlayerData> players = dataHolder.getPlayerDataArray();
+        Label[] labels = new Label[players.size];
+
+        for (int i = 0; i < players.size; i++) {
+            PlayerData player = players.get(i);
+            String labelText = String.format("%d. %s (%d, %.0f%%)", i + 1, player.getName(), player.getWins(), player.getWinPercentage());
+            labels[i] = new Label(labelText, skin);
+            labels[i].setFontScale(2.4f, 2.4f);
         }
         return labels;
     }
@@ -70,9 +93,9 @@ public class MenuState extends State{
 
         ////////////////////////////////////////////////////////////////
         TextButton button = new TextButton("PLAY", skin);
-        button.setSize(200, 100);
-        button.getLabel().setFontScale(2.0f, 2.0f);
-        button.setPosition(Constants.APP_WIDTH/2 - button.getWidth()/2, Constants.APP_HEIGHT/4);
+        button.setSize(Constants.APP_WIDTH/3.5f, Constants.APP_HEIGHT/15);
+        button.getLabel().setFontScale(1.8f, 1.8f);
+        button.setPosition(Constants.APP_WIDTH/2 - button.getWidth()/2, Constants.APP_HEIGHT/4 - button.getHeight()/2);
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -83,11 +106,12 @@ public class MenuState extends State{
         });
 
         ////////////////////////////////////////////////////////////////
-        Texture buttonTexture = new Texture(Gdx.files.internal("menub.png"));
+//        Texture buttonTexture = new Texture(Gdx.files.internal("assets/menuButton.png"));
+        Texture buttonTexture = new Texture(Gdx.files.internal("buttons/menuButton.png"));
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(buttonTexture));
         ImageButton menu_button = new ImageButton(buttonDrawable);
-        menu_button.setSize(100, 80);
-        menu_button.setPosition(Constants.APP_WIDTH - menu_button.getWidth(), Constants.APP_HEIGHT - menu_button.getHeight());
+        menu_button.setSize(Constants.APP_WIDTH/5, Constants.APP_HEIGHT/10);
+        menu_button.setPosition(Constants.APP_WIDTH/2 - menu_button.getWidth()/2, Constants.APP_HEIGHT / 2.5f - menu_button.getHeight()/2);
         menu_button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -109,11 +133,11 @@ public class MenuState extends State{
         ////////////////////////////////////////////////////////////////
 
         TextButton bestPlayersButton = new TextButton("Best Players", skin);
-        bestPlayersButton.setSize(120, 80);
-        bestPlayersButton.getLabel().setFontScale(0.6f, 0.6f);
+        bestPlayersButton.setSize(Constants.APP_WIDTH/3, Constants.APP_HEIGHT/16);
+        bestPlayersButton.getLabel().setFontScale(1.5f, 1.5f);
         // Set the position of the button on the top right corner under the menu button
         bestPlayersButton.setPosition(Constants.APP_WIDTH/2 - bestPlayersButton.getWidth()/2,
-                Constants.APP_HEIGHT/2 - bestPlayersButton.getHeight()/2);
+                Constants.APP_HEIGHT/3 - bestPlayersButton.getHeight()/2);
 
 
         ////////////////////////////////////////////////////////////////////
@@ -128,12 +152,11 @@ public class MenuState extends State{
         }
 
         final ScrollPane scoresList = new ScrollPane(scrollTable);
-        scoresList.setHeight(Constants.APP_HEIGHT/2 - label.getHeight());
-        scoresList.setWidth(Constants.APP_WIDTH / 3);
+        scoresList.setHeight(Constants.APP_HEIGHT/2);
+        scoresList.setWidth(Constants.APP_WIDTH / 2);
         scoresList.setPosition(Constants.APP_WIDTH  / 2 - scoresList.getWidth() / 2, Constants.APP_HEIGHT / 2 - scoresList.getHeight() / 2);
 
-
-        Texture backgroundTexture = new Texture(Gdx.files.internal("backgroundImages/results_bg.jpg"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("backgroundImages/scroll.png"));
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(backgroundTexture));
         scoresList.getStyle().background = backgroundDrawable;
 
@@ -145,22 +168,6 @@ public class MenuState extends State{
                 scoresList.setVisible(!scoresList.isVisible());
             }
         });
-
-        // Input processor for touch events on the main menu stage
-//        InputProcessor mainMenuInputProcessor = new InputAdapter() {
-//            @Override
-//            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//                if (scoresList.isVisible()) {
-//                    // Check if the touch is outside the list area
-//                    if (screenX < scoresList.getX() || screenX > scoresList.getX() + scoresList.getWidth() ||
-//                            screenY < scoresList.getY() || screenY > scoresList.getY() + scoresList.getHeight()) {
-//                        scoresList.setVisible(false); // Hide the list
-//                    }
-//                }
-////                return super.touchDown(screenX, screenY, pointer, button);
-//                return false;
-//            }
-//        };
 
         ///////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////
@@ -189,16 +196,14 @@ public class MenuState extends State{
 
         // Music Volume Slider
         Label musicLabel = new Label("Game Music", skin);
+        musicLabel.setFontScale(2.2f, 2.2f);
         Slider musicSlider = new Slider(0, 1, 0.01f, false, skin);
-        // Set the initial value or from saved settings
-//        musicSlider.setValue(dbInterface.getMusicVolume());
         musicSlider.setValue((float)0.5);
 
         // Sound Effects Volume Slider
         Label soundLabel = new Label("Sound Effects", skin);
+        soundLabel.setFontScale(2.2f, 2.2f);
         Slider soundSlider = new Slider(0, 1, 0.01f, false, skin);
-        // Set the initial value or from saved settings
-//        soundSlider.setValue(dbInterface.getSoundVolume());
         soundSlider.setValue((float)0.5);
 
         // Exit Button
@@ -212,19 +217,19 @@ public class MenuState extends State{
 
         settingsTable.add(musicLabel).pad(10);
         settingsTable.row();
-        settingsTable.add(musicSlider).width(200).pad(10);
+        settingsTable.add(musicSlider).width(Constants.APP_WIDTH/4).height(Constants.APP_WIDTH/16).pad(10);
         settingsTable.row();
         settingsTable.add(soundLabel).pad(10);
         settingsTable.row();
-        settingsTable.add(soundSlider).width(200).pad(10);
+        settingsTable.add(soundSlider).width(Constants.APP_WIDTH/4).height(Constants.APP_WIDTH/16).pad(10);
         settingsTable.row();
-        settingsTable.add(exitButton).pad(10);
+        settingsTable.add(exitButton).width(Constants.APP_WIDTH/5).height(Constants.APP_WIDTH/15).pad(10);
 
-        settingsTable.setSize(300, 400);
+        settingsTable.setSize(Constants.APP_WIDTH/2, Constants.APP_HEIGHT/2);
         settingsTable.setPosition(Constants.APP_WIDTH / 2 - settingsTable.getWidth() / 2, Constants.APP_HEIGHT / 2 - settingsTable.getHeight() / 2);
         settingsTable.setVisible(false); // Initially hidden
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("backgroundImages/results_bg.jpg"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("backgroundImages/scroll.png"));
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(backgroundTexture));
         settingsTable.setBackground(backgroundDrawable);
 
@@ -233,8 +238,6 @@ public class MenuState extends State{
 
     @Override
     protected void handleInput() {
-//        if(Gdx.input.justTouched()){
-//        }
     }
 
     @Override
@@ -272,6 +275,10 @@ public class MenuState extends State{
                 return false;
             }
         };
+    }
+
+    public interface OnPlayersFetchedListener {
+        void onPlayersFetched(Array<PlayerData> players);
     }
 
     public Stage getStage(){

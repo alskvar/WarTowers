@@ -2,6 +2,7 @@ package com.mygdx.wartowers.Database;
 
 import com.mygdx.wartowers.sprites.BattleResult;
 import com.mygdx.wartowers.sprites.PlayerData;
+import com.mygdx.wartowers.states.MenuState;
 
 public class CoreDBClass implements FireStoreInterface {
 
@@ -12,7 +13,7 @@ public class CoreDBClass implements FireStoreInterface {
     }
 
     @Override
-    public void getTopPlayers(DataHolderClass dataHolder) {
+    public void getTopPlayers(MenuState.OnPlayersFetchedListener listener) {
 
     }
 

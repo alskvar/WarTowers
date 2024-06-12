@@ -1,10 +1,10 @@
 package com.mygdx.wartowers;
 
 
-import com.mygdx.wartowers.Database.DataHolderClass;
 import com.mygdx.wartowers.Database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.BattleResult;
 import com.mygdx.wartowers.sprites.PlayerData;
+import com.mygdx.wartowers.states.MenuState;
 
 public class DesktopBDInterfaceClass implements FireStoreInterface {
 
@@ -15,7 +15,7 @@ public class DesktopBDInterfaceClass implements FireStoreInterface {
     }
 
     @Override
-    public void getTopPlayers(DataHolderClass dataHolder) {
+    public void getTopPlayers(MenuState.OnPlayersFetchedListener listener) {
 
     }
 

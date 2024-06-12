@@ -181,7 +181,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        screenY = Constants.APP_HEIGHT - screenY;
+        screenY = (int)Constants.APP_HEIGHT - screenY;
 //        System.out.println("point: " + pointer);
 //        System.out.println("x: " + screenX + ", y: " + screenY + ", point: " + pointer + ", but:" + button);
         for(int i = 0; i < battleground.getTowers().size; ++i){
@@ -196,7 +196,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        screenY = Constants.APP_HEIGHT - screenY;
+        screenY = (int)Constants.APP_HEIGHT - screenY;
 //        System.out.println("x: " + screenX + ", y: " + screenY + ", point: " + pointer + ", but:" + button);
         Tower selected = null;
         for(int i = 0; i < battleground.getTowers().size; ++i){

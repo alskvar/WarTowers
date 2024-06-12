@@ -53,4 +53,11 @@ public class PlayerData {
     public void incrementGamesPlayed() {
         gamesPlayed++;
     }
+
+    public float getWinPercentage() {
+        if (gamesPlayed == 0) {
+            return 0;
+        }
+        return (float) wins / gamesPlayed * 100;
+    }
 }
