@@ -31,11 +31,11 @@ public class BattleResultState extends State {
 
         // Create winner label
         Label winnerLabel = new Label("Winner: \n" + winnerName, skin);
-        winnerLabel.setFontScale(2);
+        winnerLabel.setFontScale(Constants.APP_WIDTH/450.0f);
 //        winnerLabel.setPosition(Constants.APP_WIDTH/2 - winnerLabel.getWidth()/2, Constants.APP_HEIGHT/3);
 
         TextButton button = new TextButton("BACK", skin);
-        button.setSize(200, 100);
+        button.setSize(Constants.APP_WIDTH/4, Constants.APP_HEIGHT/12);
         button.getLabel().setFontScale(2.0f, 2.0f);
         button.setPosition(Constants.APP_WIDTH/2 - button.getWidth()/2, Constants.APP_HEIGHT/10);
         button.addListener(new ClickListener() {
@@ -48,7 +48,8 @@ public class BattleResultState extends State {
 
         Table table = new Table();
         table.add(winnerLabel).padBottom(50);
-        table.setPosition(Constants.APP_WIDTH/2 - table.getWidth()/2, Constants.APP_HEIGHT/2 - table.getHeight() - 50);
+        table.setPosition(Constants.APP_WIDTH/2 - table.getWidth()/2, Constants.APP_HEIGHT/2.2f - table.getHeight() - 50);
+
 
         stage = new Stage(new ScreenViewport());
         stage.addActor(table);
