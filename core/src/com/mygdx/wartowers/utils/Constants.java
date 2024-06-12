@@ -1,6 +1,8 @@
 package com.mygdx.wartowers.utils;
 
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Constants {
     public static float APP_WIDTH = 480;
     public static float APP_HEIGHT = 800;
@@ -22,5 +24,14 @@ public class Constants {
     public static final int[] warriors_defence = {3, 2};
     public static final int[] warriors_attack = {2, 3};
     public static int[] warriors_speed = {80, 120};
+
+    public static final String[] warriors_names = {"shield-bearer", "assassin"};
+
+    //set colors for each player
+    public static final Color[] playerColors = {
+            new Color(0.5f, 0.5f, 0.5f, 1),
+            new Color(0, 0, 1, 1),
+            new Color(1, 0, 0, 1)
+    };
 
 }

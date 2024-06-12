@@ -30,8 +30,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class MenuState extends State{
 
-//    private Stage stage;
-    private Texture background;
+
+    private final Texture background;
     private Texture menub;
     protected FireStoreInterface dbInterface;
 
@@ -40,7 +40,6 @@ public class MenuState extends State{
         super(gsm);
         inputProcessors = new Array<InputProcessor>();
         background = new Texture("backgroundImages/menu_bg.jpg");
-//        menub = new Texture("menub.png");
         this.dbInterface = dbInterface;
         set_stage();
     }

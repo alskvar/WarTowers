@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.wartowers.Database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.Battleground;
@@ -21,13 +22,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-
 public class PlayState extends State implements InputProcessor, GestureDetector.GestureListener {
 
     private final GestureDetector gestureDetector;
     private boolean doubleTapDetected;
 
-//    private final Stage stage;
     private final Battleground battleground;
     private final Texture bg;
     private final Random random;
@@ -38,6 +37,8 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     private float lastGyroZ;
     private float gyroscopeTimeout;
 
+    private final Skin skin;
+
 
     public PlayState(GameStateManager gsm, FireStoreInterface dbInterface) {
         super(gsm);
@@ -47,6 +48,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         carriages = new ArrayList<>();
         bg = new Texture(battleground.getBackgroundImagePath());
         stage = new Stage(new ScreenViewport());
+        skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
         doubleTapDetected = false;
         gestureDetector = new GestureDetector(this);
         this.lastGyroY = this.lastGyroX = this.lastGyroZ = 0;
@@ -112,9 +114,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         sb.begin();
         sb.draw(bg, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
         for (Tower tower : battleground.getTowers()) {
-            sb.draw(tower.getTowerTexture(), tower.getPosition().x, tower.getPosition().y);
-            tower.getFont().draw(sb, "has " + tower.getAmount(), tower.getPosition().x, tower.getPosition().y - 10);
-            tower.getFont().draw(sb, "warType " + tower.getWarrior().getKind(), tower.getPosition().x - 5, tower.getPosition().y - 20);
+            tower.render(sb);
         }
         for (Carriage carriage : carriages) {
             carriage.render(sb);
@@ -228,7 +228,6 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         screenY = (int)Constants.APP_HEIGHT - screenY;
-//        System.out.println("x: " + screenX + ", y: " + screenY + ", point: " + pointer + ", but:" + button);
         Tower selected = null;
         for(int i = 0; i < battleground.getTowers().size; ++i){
             if(battleground.getTowers().get(i).isSelected()){
@@ -255,7 +254,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
                 System.out.println("" + selected.getId() + " attacks " + tower.getId());
 
                 Carriage carriage = new Carriage(selected.getOwner(),
-                        selected.getWarrior().getKind(), selected.transferOut(1), pathResult.getPath(), selected.getPosition());
+                        selected.getWarrior().getKind(), selected.transferOut(1), pathResult.getPath(), selected.getCenterX());
                 carriages.add(carriage);
             }
         }

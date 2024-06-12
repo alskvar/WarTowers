@@ -166,11 +166,9 @@ public class Battleground {
     }
 
     public void dispose() {
-        // Dispose each tower's resources
         for (Tower tower : towers) {
             tower.dispose();
         }
-        // Clear the towers and connections
         towers.clear();
         connections.clear();
     }

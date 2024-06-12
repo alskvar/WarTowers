@@ -3,6 +3,8 @@ package com.mygdx.wartowers.sprites;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.wartowers.utils.Constants;
@@ -11,6 +13,7 @@ public class Tower  {
 
     private Vector3 position;
     private Texture towerTexture;
+    private Texture towerInfoBackground;
     private final BitmapFont font;
 
     private final int id;
@@ -36,6 +39,7 @@ public class Tower  {
 
     public Tower(int x, int y, int id, int owner, int level, int amount, int warriorKind){
         this.font = new BitmapFont();
+        font.getData().scale(1.3f);
         this.warrior = new Warrior(warriorKind);
         this.selected = false;
         this.owner = owner;
@@ -44,6 +48,7 @@ public class Tower  {
         if (Gdx.files.internal(Constants.TowerSkins[owner][level]).exists()) {
             Gdx.app.log("Asset Check", "File exists: " + Constants.TowerSkins[owner][level]);
             this.towerTexture = new Texture(Constants.TowerSkins[owner][level]);
+            this.towerInfoBackground = new Texture("backgroundImages/towerInfoBG2.png");
         } else {
             Gdx.app.log("Asset Check", "File does not exist: " + Constants.TowerSkins[owner][level]);
         }
@@ -67,6 +72,7 @@ public class Tower  {
         if(owner != 1 || level == 1 || amount < 15)
             return;
         level = 1;
+        amount -= 10;
         reloadTexture();
     }
 
@@ -177,6 +183,33 @@ public class Tower  {
     }
 
     public Warrior getWarrior() { return warrior;}
+
+    public Vector3 getCenterX(){
+        return new Vector3(position.x + towerTexture.getWidth()/2.0f, position.y, 1);
+    }
+
+    public void render(SpriteBatch sb){
+        sb.draw(towerTexture, position.x, position.y);
+        Vector3 center = getCenterX();
+
+        // Text contents
+        String amountText = "" + amount;
+        String warTypeText = Constants.warriors_names[warrior.getKind()];
+
+        // Measure text sizes
+        GlyphLayout amountLayout = new GlyphLayout(font, amountText);
+        GlyphLayout warTypeLayout = new GlyphLayout(font, warTypeText);
+
+        float totalTextHeight = amountLayout.height + warTypeLayout.height + 10;
+
+        float bgWidth = Math.max(amountLayout.width, warTypeLayout.width) + 20;
+        float bgHeight = totalTextHeight + 30;
+
+        sb.draw(towerInfoBackground, center.x - bgWidth / 2, center.y - bgHeight - 20, bgWidth, bgHeight + 20);
+
+        font.draw(sb, amountText, center.x - amountLayout.width / 2, center.y - totalTextHeight - 10);
+        font.draw(sb, warTypeText, center.x - warTypeLayout.width / 2, center.y - totalTextHeight / 2);
+    }
 
     public void dispose() {
         towerTexture.dispose();

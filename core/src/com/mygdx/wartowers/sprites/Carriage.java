@@ -1,8 +1,10 @@
 package com.mygdx.wartowers.sprites;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.wartowers.utils.Constants;
 
 public class Carriage {
     private final Warrior warrior;
@@ -10,7 +12,8 @@ public class Carriage {
     private final int destination;
     private final Array<Battleground.ConnectionGraph> path;
     private int numberOfPassedTowers;
-    private final int[] info;
+    private int[] info;
+    private final BitmapFont font;
 
     private final Vector3 currentPosition;
     private final Vector3 direction;
@@ -28,6 +31,11 @@ public class Carriage {
         // Initialize the direction and remaining distance to the next tower
         this.direction = new Vector3();
         this.remainingDistanceToNextTower = -1;
+
+        this.font = new BitmapFont();
+        font.getData().scale(1.1f);
+        font.getData().markupEnabled = true;
+        font.setColor(Constants.playerColors[owner]);
     }
 
     public int getWarriorsType() {
@@ -73,8 +81,8 @@ public class Carriage {
         if (remainingDistanceToNextTower <= 0) {
             Tower currentTower = towers.get(path.get(numberOfPassedTowers - 1).toTowerId);
             Tower nextTower = towers.get(path.get(numberOfPassedTowers).toTowerId);
-            direction.set(nextTower.getPosition()).sub(currentTower.getPosition()).nor();
-            remainingDistanceToNextTower = currentTower.getPosition().dst(nextTower.getPosition());
+            direction.set(nextTower.getCenterX()).sub(currentTower.getCenterX()).nor();
+            remainingDistanceToNextTower = currentTower.getCenterX().dst(nextTower.getCenterX());
         }
 
         float distanceToMove = warrior.getSpeed() * dt;
@@ -89,7 +97,23 @@ public class Carriage {
     }
 
     public void render(SpriteBatch sb) {
-        sb.draw(warrior.getTexture(), currentPosition.x, currentPosition.y);
+        sb.draw(warrior.getTexture(), currentPosition.x - warrior.getTexture().getWidth()/2.0f, currentPosition.y);
+        String amountText = "" + getAmount();
+        font.draw(sb, amountText, currentPosition.x - warrior.getTexture().getWidth()/2.0f, currentPosition.y + warrior.getTexture().getHeight() + 15);
+    }
+
+    public int getAmount() {
+        return info[0];
+    }
+
+    public void damage(float damage) {
+        if (info[0] > 0) {
+            if (info[0] == 1){
+                info[0] = 0;
+            }else{
+                info[0] = (int) (info[0] * damage);
+            }
+        }
     }
 }
 
