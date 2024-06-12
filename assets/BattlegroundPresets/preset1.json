@@ -1,9 +1,9 @@
 {
   "towers": [
-    {"id": 0, "x": 200, "y": 710, "owner": 1, "level":0, "troops": 10, "troopsType": 1},
-    {"id": 1, "x": 50, "y": 410, "owner": 0, "level":0, "troops": 10, "troopsType": 1},
-    {"id": 2, "x": 350, "y": 410, "owner": 0, "level":0, "troops": 10, "troopsType": 1},
-    {"id": 3, "x": 200, "y": 110, "owner": 2, "level":0, "troops": 10, "troopsType": 1}
+    {"id": 0, "xScale": 0.5, "yScale": 0.8, "owner": 1, "level":0, "troops": 10, "troopsType": 1},
+    {"id": 1, "xScale": 0.2, "yScale": 0.4, "owner": 0, "level":0, "troops": 10, "troopsType": 1},
+    {"id": 2, "xScale": 0.8, "yScale": 0.4, "owner": 0, "level":0, "troops": 10, "troopsType": 1},
+    {"id": 3, "xScale": 0.5, "yScale": 0.05, "owner": 2, "level":0, "troops": 10, "troopsType": 1}
   ],
   "connections": [
     {"from": 0, "to": 1, "weight": 10},

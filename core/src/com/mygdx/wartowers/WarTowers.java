@@ -35,6 +35,7 @@ public class WarTowers extends Game {
 		int screenHeight = Gdx.graphics.getHeight();
 		Constants.APP_WIDTH = screenWidth;
 		Constants.APP_HEIGHT = screenHeight;
+		Constants.warriors_speed = new int[]{(int)(screenWidth / 5.0f), (int)(screenWidth / 5.0f)};
 
 		Gdx.app.log("Screen Size", "Width: " + screenWidth + ", Height: " + screenHeight);
 
@@ -90,9 +91,5 @@ public class WarTowers extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
-	}
-
-	public interface PlayerDataCallback {
-		void onCallback(PlayerData playerData);
 	}
 }

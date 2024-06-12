@@ -3,6 +3,7 @@ package com.mygdx.wartowers.sprites;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.mygdx.wartowers.utils.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +29,8 @@ public class Battleground {
         JsonValue towersJson = root.get("towers");
         for (JsonValue towerJson : towersJson) {
             int id = towerJson.getInt("id");
-            int x = towerJson.getInt("x");
-            int y = towerJson.getInt("y");
+            int x = (int)(towerJson.getFloat("xScale") * Constants.APP_WIDTH);
+            int y = (int)(towerJson.getFloat("yScale") * Constants.APP_HEIGHT);
             int owner = towerJson.getInt("owner");
             int troops = towerJson.getInt("troops");
             int troopsType = towerJson.getInt("troopsType");

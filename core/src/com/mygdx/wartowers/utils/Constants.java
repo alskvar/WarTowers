@@ -21,6 +21,6 @@ public class Constants {
 
     public static final int[] warriors_defence = {3, 2};
     public static final int[] warriors_attack = {2, 3};
-    public static final int[] warriors_speed = {70, 110};
+    public static int[] warriors_speed = {80, 120};
 
 }

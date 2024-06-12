@@ -9,7 +9,7 @@ import com.mygdx.wartowers.utils.Constants;
 
 public class Tower  {
 
-    private final Vector3 position;
+    private Vector3 position;
     private Texture towerTexture;
     private final BitmapFont font;
 
@@ -35,7 +35,6 @@ public class Tower  {
 
 
     public Tower(int x, int y, int id, int owner, int level, int amount, int warriorKind){
-        this.position = new Vector3(x, y, 1);
         this.font = new BitmapFont();
         this.warrior = new Warrior(warriorKind);
         this.selected = false;
@@ -48,6 +47,7 @@ public class Tower  {
         } else {
             Gdx.app.log("Asset Check", "File does not exist: " + Constants.TowerSkins[owner][level]);
         }
+        this.position = new Vector3(x - towerTexture.getWidth()/2.0f, y, 1);
         this.amount = amount;
         capacity = new int[]{CAP1, CAP2};
         interval = new long[]{INTERVAL1, INTERVAL2};
@@ -57,8 +57,10 @@ public class Tower  {
 
 
     public void reloadTexture(){
+        this.position = new Vector3(position.x + towerTexture.getWidth()/2.0f, position.y, 1);
         towerTexture.dispose();
         towerTexture = new Texture(Constants.TowerSkins[owner][level]);
+        this.position = new Vector3(position.x - towerTexture.getWidth()/2.0f, position.y, 1);
     }
 
     public void upgradeTower(){
