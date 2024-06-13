@@ -32,6 +32,9 @@ public class MenuState extends State{
 
 
     private final Texture background;
+    private final Texture emblem;
+    private final float emblemWidth = Constants.APP_WIDTH / 2.2f;
+    private final float emblemHeight = Constants.APP_WIDTH / 2.2f;
     private Texture menub;
     protected FireStoreInterface dbInterface;
 
@@ -39,7 +42,8 @@ public class MenuState extends State{
     public MenuState(GameStateManager gsm, FireStoreInterface dbInterface){
         super(gsm);
         inputProcessors = new Array<InputProcessor>();
-        background = new Texture("backgroundImages/menu_bg.jpg");
+        background = new Texture("backgroundImages/mainMenu_bg.jpg");
+        emblem = new Texture("emblem2.png");
         this.dbInterface = dbInterface;
         set_stage();
     }
@@ -95,12 +99,6 @@ public class MenuState extends State{
     private void set_stage(){
         final Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
         Skin skin_def = new Skin(Gdx.files.internal("font_skins/default/uiskin.json"));
-
-        Label label = new Label("WAR TOWERS", skin_def);
-        label.setFontScale(2.6f, 2.6f);
-        label.setSize(300, 200);
-        label.setPosition((Constants.APP_WIDTH/2) - label.getWidth()/2, Constants.APP_HEIGHT * 8 / 10);
-
 
         ////////////////////////////////////////////////////////////////
         TextButton button = new TextButton("PLAY", skin);
@@ -180,7 +178,7 @@ public class MenuState extends State{
 
         stage = new Stage(new ScreenViewport());
         stage.addActor(bestPlayersButton);
-        stage.addActor(label);
+//        stage.addActor(label);
         stage.addActor(button);
         stage.addActor(menu_button);
         stage.addActor(scoresList);
@@ -254,6 +252,7 @@ public class MenuState extends State{
     public void render(SpriteBatch sb) {
         sb.begin();
         sb.draw(background, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+        sb.draw(emblem, Constants.APP_WIDTH / 2.0f - emblemWidth/ 2.0f, Constants.APP_HEIGHT * 0.86f - emblemHeight, emblemWidth, emblemHeight);
         sb.end();
         stage.act();
         stage.draw();

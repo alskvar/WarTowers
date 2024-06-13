@@ -78,7 +78,6 @@ public class Carriage {
         if (hasReachedDestination()) {
             return;
         }
-//        System.out.println("Carriage update  " + dt);
         if (hide) {
             System.out.println("Carriage hide");
             remainingTimeToHide = Constants.CARRIAGE_HIDE_TIME;
