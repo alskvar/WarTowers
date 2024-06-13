@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,14 +34,15 @@ public class MenuState extends State{
 
     private final Texture background;
     private final Texture emblem;
+    private final String nickname;
     private final float emblemWidth = Constants.APP_WIDTH / 2.2f;
     private final float emblemHeight = Constants.APP_WIDTH / 2.2f;
-    private Texture menub;
     protected FireStoreInterface dbInterface;
 
 //    public MenuState(GameStateManager gsm){
-    public MenuState(GameStateManager gsm, FireStoreInterface dbInterface){
+    public MenuState(GameStateManager gsm, FireStoreInterface dbInterface, String nickname){
         super(gsm);
+        this.nickname = nickname;
         inputProcessors = new Array<InputProcessor>();
         background = new Texture("backgroundImages/mainMenu_bg.jpg");
         emblem = new Texture("emblem2.png");
@@ -115,6 +117,11 @@ public class MenuState extends State{
         });
 
         ////////////////////////////////////////////////////////////////
+        Label nicknameLabel = new Label(this.nickname, skin);
+        nicknameLabel.setFontScale(2.5f, 2.5f);
+        nicknameLabel.setPosition(Constants.APP_WIDTH / 2 - nicknameLabel.getWidth(), Constants.APP_HEIGHT / 2 - nicknameLabel.getHeight() / 2);
+        nicknameLabel.setColor(new Color(0, 0, 0.55f, 1));
+        ////////////////////////////////////////////////////////////////
 //        Texture buttonTexture = new Texture(Gdx.files.internal("assets/menuButton.png"));
         Texture buttonTexture = new Texture(Gdx.files.internal("buttons/menuButton.png"));
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(buttonTexture));
@@ -178,7 +185,7 @@ public class MenuState extends State{
 
         stage = new Stage(new ScreenViewport());
         stage.addActor(bestPlayersButton);
-//        stage.addActor(label);
+        stage.addActor(nicknameLabel);
         stage.addActor(button);
         stage.addActor(menu_button);
         stage.addActor(scoresList);

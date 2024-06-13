@@ -11,7 +11,7 @@ import com.mygdx.wartowers.Database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.BattleResult;
 import com.mygdx.wartowers.sprites.PlayerData;
 import com.mygdx.wartowers.states.GameStateManager;
-import com.mygdx.wartowers.states.MenuState;
+import com.mygdx.wartowers.states.LoginState;
 import com.mygdx.wartowers.utils.Constants;
 
 
@@ -41,7 +41,7 @@ public class WarTowers extends Game {
 
 //		testDBFunction();
 
-		gsm.push(new MenuState(gsm, dbInterface));
+		gsm.push(new LoginState(gsm, dbInterface));
 	}
 
 	private void testDBFunction(){
