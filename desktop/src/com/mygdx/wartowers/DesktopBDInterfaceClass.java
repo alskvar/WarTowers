@@ -1,7 +1,7 @@
 package com.mygdx.wartowers;
 
 
-import com.mygdx.wartowers.Database.FireStoreInterface;
+import com.mygdx.wartowers.database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.BattleResult;
 import com.mygdx.wartowers.sprites.PlayerData;
 import com.mygdx.wartowers.states.MenuState;

@@ -1,4 +1,5 @@
-package com.mygdx.wartowers.Database;
+package com.mygdx.wartowers.database;
+
 
 import com.mygdx.wartowers.sprites.BattleResult;
 import com.mygdx.wartowers.sprites.PlayerData;

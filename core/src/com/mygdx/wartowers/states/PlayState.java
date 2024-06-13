@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.wartowers.Database.FireStoreInterface;
+import com.mygdx.wartowers.database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.Battleground;
 import com.mygdx.wartowers.sprites.Carriage;
 import com.mygdx.wartowers.sprites.Catastrophe;

@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mygdx.wartowers.Database.DataHolderClass;
-import com.mygdx.wartowers.Database.FireStoreInterface;
+import com.mygdx.wartowers.Bluetooth.BluetoothServiceInterface;
+import com.mygdx.wartowers.database.DataHolderClass;
+import com.mygdx.wartowers.database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.BattleResult;
 import com.mygdx.wartowers.sprites.PlayerData;
 import com.mygdx.wartowers.states.GameStateManager;
@@ -19,11 +20,13 @@ public class WarTowers extends Game {
 	SpriteBatch batch;
 	GameStateManager gsm;
 	FireStoreInterface dbInterface;
+	BluetoothServiceInterface bluetoothService;
 
 	public WarTowers() {
 	}
-	public WarTowers(FireStoreInterface dbInterface) {
+	public WarTowers(FireStoreInterface dbInterface, BluetoothServiceInterface bluetoothService) {
 		this.dbInterface = dbInterface;
+		this.bluetoothService = bluetoothService;
 	}
 	@Override
 	public void create () {
@@ -41,7 +44,7 @@ public class WarTowers extends Game {
 
 //		testDBFunction();
 
-		gsm.push(new LoginState(gsm, dbInterface));
+		gsm.push(new LoginState(gsm, dbInterface, bluetoothService));
 	}
 
 	private void testDBFunction(){

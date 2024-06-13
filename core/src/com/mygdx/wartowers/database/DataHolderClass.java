@@ -1,4 +1,4 @@
-package com.mygdx.wartowers.Database;
+package com.mygdx.wartowers.database;
 
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.wartowers.sprites.PlayerData;

@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.wartowers.Database.DataHolderClass;
-import com.mygdx.wartowers.Database.FireStoreInterface;
+import com.mygdx.wartowers.database.DataHolderClass;
+import com.mygdx.wartowers.database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.PlayerData;
 import com.mygdx.wartowers.utils.Constants;
 
