@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.wartowers.WarTowers;
+import com.mygdx.wartowers.sprites.BattleResult;
 import com.mygdx.wartowers.utils.Constants;
 
 public class BattleResultState extends State {
@@ -30,9 +32,14 @@ public class BattleResultState extends State {
 
         Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
 
+        if (changeDB) {
+            BattleResult btr = new BattleResult(winnerName, loserName, winnerName);
+            WarTowers.dbInterface.updateBattleResult(btr);
+        }
+
         // Create winner label
         Label winnerLabel = new Label("Winner: \n" + winnerName, skin);
-        winnerLabel.setFontScale(Constants.APP_WIDTH/450.0f);
+        winnerLabel.setFontScale(Constants.APP_WIDTH/350.0f);
 //        winnerLabel.setPosition(Constants.APP_WIDTH/2 - winnerLabel.getWidth()/2, Constants.APP_HEIGHT/3);
 
         TextButton button = new TextButton("BACK", skin);
