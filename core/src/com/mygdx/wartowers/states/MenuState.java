@@ -38,7 +38,6 @@ public class MenuState extends State{
     private final float emblemWidth = Constants.APP_WIDTH / 2.2f;
     private final float emblemHeight = Constants.APP_WIDTH / 2.2f;
 
-//    public MenuState(GameStateManager gsm){
     public MenuState(GameStateManager gsm, String nickname){
         super(gsm);
         MenuState.nickname = nickname;
@@ -77,7 +76,6 @@ public class MenuState extends State{
 
     private void set_stage(){
         final Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
-        Skin skin_def = new Skin(Gdx.files.internal("font_skins/default/uiskin.json"));
 
         ////////////////////////////////////////////////////////////////
         TextButton button = new TextButton("PLAY", skin);
@@ -87,7 +85,6 @@ public class MenuState extends State{
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                gsm.set(new PlayState(gsm));
                 gsm.push(new PlayState(gsm));
             }
         });
@@ -141,8 +138,7 @@ public class MenuState extends State{
         scoresList.setPosition(Constants.APP_WIDTH  / 2 - scoresList.getWidth() / 2, Constants.APP_HEIGHT / 2 - scoresList.getHeight() / 2);
 
         Texture backgroundTexture = new Texture(Gdx.files.internal("backgroundImages/scroll.png"));
-        TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(backgroundTexture));
-        scoresList.getStyle().background = backgroundDrawable;
+        scoresList.getStyle().background = new TextureRegionDrawable(new TextureRegion(backgroundTexture));
 
 
         scoresList.setVisible(false);
@@ -219,8 +215,6 @@ public class MenuState extends State{
 
     protected void activateStagesInputProcessor(){
         InputMultiplexer multiplexer = new InputMultiplexer();
-
-        // Iterate over the actors and add their input processors to the multiplexer
         for (InputProcessor inputProcessor: inputProcessors) {
             multiplexer.addProcessor(inputProcessor);
         }

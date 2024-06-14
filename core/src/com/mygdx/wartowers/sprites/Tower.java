@@ -95,16 +95,13 @@ public class Tower  {
             if( itISTime(true))  amount++;
         if(amount > capacity[level])
             if( itISTime(false))  amount--;
-//        System.out.println(amount);
     }
 
     public boolean overlap(float x, float y){
-//        System.out.println("x: " + x + ", y: " + y + ", Tx: " + position.x + ", Ty:" + position.y);
         if(position.x > x || position.x + towerTexture.getWidth() < x)
             return false;
         if(position.y > y || position.y + towerTexture.getHeight() < y)
             return false;
-//        System.out.println("ok");
         return true;
     }
 
@@ -127,7 +124,6 @@ public class Tower  {
     }
 
     public void transferIn(int[] gift){
-//        System.out.println("" + gift[0] + ", " + gift[1] + ", " + gift[2]);
         if(owner == gift[2]){
             amount += gift[0];
             System.out.println("same owner = " + owner);
@@ -189,11 +185,9 @@ public class Tower  {
         sb.draw(towerTexture, position.x, position.y);
         Vector3 center = getCenterX();
 
-        // Text contents
         String amountText = "" + amount;
         String warTypeText = Constants.warriors_names[warrior.getKind()];
 
-        // Measure text sizes
         GlyphLayout amountLayout = new GlyphLayout(font, amountText);
         GlyphLayout warTypeLayout = new GlyphLayout(font, warTypeText);
 

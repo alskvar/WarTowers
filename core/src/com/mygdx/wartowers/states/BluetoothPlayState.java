@@ -18,9 +18,6 @@ public class BluetoothPlayState extends PlayState{
     private final boolean isHost;
     private final String player1Name;
     private final String player2Name;
-    private Label firstPlayerLabel;
-    private Label secondPlayerLabel;
-    private Label vsLabel;
 
     public BluetoothPlayState(GameStateManager gsm, boolean isHost, String player1Name, String player2Name) {
         super(gsm);
@@ -29,11 +26,11 @@ public class BluetoothPlayState extends PlayState{
         this.player2Name = player2Name;
 
 
-        firstPlayerLabel = new Label(player1Name + (isHost ? "(Host)": ""), skin, "title");
-        secondPlayerLabel = new Label(player2Name + (isHost ? "": "(Host)"), skin, "title");
+        Label firstPlayerLabel = new Label(player1Name + (isHost ? "(Host)" : ""), skin, "title");
+        Label secondPlayerLabel = new Label(player2Name + (isHost ? "" : "(Host)"), skin, "title");
         secondPlayerLabel.setWidth((float) (Constants.APP_WIDTH * 0.3));
         firstPlayerLabel.setWidth((float) (Constants.APP_WIDTH * 0.3));
-        vsLabel = new Label("VS", skin, "title");
+        Label vsLabel = new Label("VS", skin, "title");
         vsLabel.setFontScale(2);
         vsLabel.setWidth((float) (Constants.APP_WIDTH * 0.1f));
         vsLabel.setPosition(Constants.APP_WIDTH / 2 - vsLabel.getWidth() / 2, Constants.APP_HEIGHT * 0.94f - vsLabel.getHeight() / 2);
@@ -91,17 +88,13 @@ public class BluetoothPlayState extends PlayState{
         Tower selected = battleground.getTowers().get(from);
         Tower tower = battleground.getTowers().get(to);
         if (tower.getId() == selected.getId()) {
-            System.out.println("ooooooooops, can't send to yourself");
             return;
         }
         Battleground.PathResult pathResult =
                 battleground.getShortestPath(selected.getId(), tower.getId());
         if (pathResult.getDistance() == Integer.MAX_VALUE) {
-            System.out.println("oooooooooops, no path");
             return;
         }
-
-        System.out.println("" + selected.getId() + " attacks " + tower.getId());
 
         Carriage carriage = new Carriage(selected.getOwner(),
                 selected.getWarrior().getKind(), selected.transferOut(1), pathResult.getPath(), selected.getCenterX());
@@ -117,7 +110,6 @@ public class BluetoothPlayState extends PlayState{
             if (battleground.getWinner() == -1) {
                 return;
             }
-            Gdx.app.log("Bluetooth", "Game over winner is " + battleground.getWinner() + " myself is " + myself + "  " + player1Name);
             String winner = (battleground.getWinner() == myself) ? player1Name : player2Name;
             String loser = (battleground.getWinner() == myself) ? player2Name : player1Name;
             String toSend = "GAMEOVER:" + winner + ":" + loser;
@@ -160,18 +152,14 @@ public class BluetoothPlayState extends PlayState{
         }
 
         boolean result = false;
-        // Check if the gyroscope has rotated on Y
         if (Math.abs(currentGyroZ - lastGyroZ) > 1.0f) {
             if (gyroscopeTimeout == 0) {
                 gyroscopeTimeout = 3.0f;
                 result = true;
                 if (currentGyroY - lastGyroZ > 0) {
                     WarTowers.bluetoothService.sendMessage("GYROSCOPE:RIGHT");
-                    System.out.println("Gyroscope rotation detected on right");
-                }
-                else {
+                } else {
                     WarTowers.bluetoothService.sendMessage("GYROSCOPE:LEFT");
-                    System.out.println("Gyroscope rotation detected on left");
                 }
             }
         }
@@ -196,23 +184,18 @@ public class BluetoothPlayState extends PlayState{
         }
         if(selected == null)
             return false;
-        Gdx.app.log("selected in UP", "Tower selected: " + selected.getId());
         for(int i = 0; i < battleground.getTowers().size; ++i){
             Tower tower = battleground.getTowers().get(i);
             if(tower.getId() != selected.getId() && tower.overlap(screenX, screenY)){
                 Battleground.PathResult pathResult =
                         battleground.getShortestPath(selected.getId(), tower.getId());
                 if (pathResult.getDistance() == Integer.MAX_VALUE) {
-                    System.out.println("no path");
                     break;
                 }
-                System.out.println("" + selected.getId() + " attacks " + tower.getId());
-
                 Carriage carriage = new Carriage(selected.getOwner(),
                         selected.getWarrior().getKind(), selected.transferOut(1), pathResult.getPath(), selected.getCenterX());
                 carriages.add(carriage);
                 String toSend = "CARRIAGE:" + selected.getOwner() + ":" + selected.getId() + ":" + tower.getId();
-
                 WarTowers.bluetoothService.sendMessage(toSend);
             }
         }
@@ -222,16 +205,11 @@ public class BluetoothPlayState extends PlayState{
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("xY tap", "Xh: " + x + ", Y: " + y);
         y = Constants.APP_HEIGHT - y;
-        Gdx.app.log("doubleTaP", "Now: " + doubleTapDetected);
         if (doubleTapDetected) {
-            System.out.println("Double tap detected!");
-            Gdx.app.log("doubleTaP", "Boolean: " + doubleTapDetected);
             for(int i = 0; i < battleground.getTowers().size; ++i) {
                 Tower tower = battleground.getTowers().get(i);
                 if (tower.overlap(x, y)) {
-                    Gdx.app.log("Bluetooth", "Tower selected: " + tower.getId() + " owner: " + tower.getOwner() + " isHost: " + isHost + "so: " + (isHost ? 1 : 2));
                     if (tower.getOwner() == (isHost ? 1 : 2)) {
                         tower.upgradeTower();
                         String toSend = "UPGRADE:" + tower.getId();
@@ -243,19 +221,13 @@ public class BluetoothPlayState extends PlayState{
             }
             doubleTapDetected = false;
         }else {
-            Gdx.app.log("doubleTaP", "NowChangeFromBoolean: " + doubleTapDetected);
             doubleTapDetected = true;
-            Gdx.app.log("doubleTaP", "ChangedToBoolean: " + doubleTapDetected);
-
         }
         return false;
     }
     @Override
     public void render(SpriteBatch sb){
         super.render(sb);
-
-        //add names of players
-
     }
 
     @Override

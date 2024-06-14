@@ -44,7 +44,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         super(gsm);
         random = new Random();
         catastrophe = new Catastrophe();
-        battleground = new Battleground(loadJsonFromFile(Constants.BATTLEGROUND_JSON_PATH));
+        battleground = new Battleground(loadJsonFromFile());
         carriages = new ArrayList<>();
         bg = new Texture(battleground.getBackgroundImagePath());
         stage = new Stage(new ScreenViewport());
@@ -55,8 +55,8 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         Gdx.input.setInputProcessor(new InputMultiplexer(this, gestureDetector));
     }
 
-    private static String loadJsonFromFile(String filePath) {
-        FileHandle fileHandle = Gdx.files.internal(filePath);
+    private static String loadJsonFromFile() {
+        FileHandle fileHandle = Gdx.files.internal(Constants.BATTLEGROUND_JSON_PATH);
         return fileHandle.readString();
     }
 
@@ -77,7 +77,6 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         }
 
         boolean result = false;
-        // Check if the gyroscope has rotated on Y
         if (Math.abs(currentGyroZ - lastGyroZ) > 1.0f) {
             if (gyroscopeTimeout == 0) {
                 gyroscopeTimeout = 3.0f;
@@ -142,16 +141,10 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         catastrophe.dispose();
     }
 
-
-
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("xY tap", "Xh: " + x + ", Y: " + y);
         y = Constants.APP_HEIGHT - y;
-        Gdx.app.log("doubleTaP", "Now: " + doubleTapDetected);
         if (doubleTapDetected) {
-            System.out.println("Double tap detected!");
-            Gdx.app.log("doubleTaP", "Boolean: " + doubleTapDetected);
             for(int i = 0; i < battleground.getTowers().size; ++i) {
                 Tower tower = battleground.getTowers().get(i);
                 if (tower.overlap(x, y) && tower.getOwner() == 1) {
@@ -161,9 +154,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             }
             doubleTapDetected = false;
         }else {
-            Gdx.app.log("doubleTaP", "NowChangeFromBoolean: " + doubleTapDetected);
             doubleTapDetected = true;
-            Gdx.app.log("doubleTaP", "ChangedToBoolean: " + doubleTapDetected);
 
         }
         return false;
@@ -231,7 +222,6 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             Tower tower = battleground.getTowers().get(i);
             if(tower.overlap(screenX, screenY)){
                 tower.setSelected(true);
-                Gdx.app.log("selected", "Tower selected: " + tower.getId());
                 break;
             }
         }
@@ -254,14 +244,12 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             selected.setSelected(false);
             return false;
         }
-        System.out.println("selected: " + selected.getId());
         for(int i = 0; i < battleground.getTowers().size; ++i){
             Tower tower = battleground.getTowers().get(i);
             if(tower.getId() != selected.getId() && tower.overlap(screenX, screenY)){
                 Battleground.PathResult pathResult =
                         battleground.getShortestPath(selected.getId(), tower.getId());
                 if (pathResult.getDistance() == Integer.MAX_VALUE) {
-                    System.out.println("no path");
                     break;
                 }
                 System.out.println("" + selected.getId() + " attacks " + tower.getId());

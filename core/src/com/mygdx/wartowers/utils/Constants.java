@@ -7,7 +7,6 @@ public class Constants {
     public static float APP_WIDTH = 480;
     public static float APP_HEIGHT = 800;
     public static final float CARRIAGE_HIDE_TIME = 2;
-    public static final int MESSAGE_READ = 1;
     public static final int REQUEST_BLUETOOTH_PERMISSIONS = 1001;
     public static final String BATTLEGROUND_JSON_PATH = "BattlegroundPresets/preset2.json";
     public static final String SKIN_COSMIC_PATH = "font_skins/comic/comic-ui.json";

@@ -20,15 +20,15 @@ import java.util.Random;
 
 public class BluetoothPlayersReadyState extends State{
 
-    private Label firstPlayerLabel;
-    private Label secondPlayerLabel;
+    private final Label firstPlayerLabel;
+    private final Label secondPlayerLabel;
     private final Texture background;
     String firstPlayerName = "None";
     String secondPlayerName = "None";
     boolean secondPlayerConnected = false;
     boolean firstPlayerReady = false;
     boolean secondPlayerReady = false;
-    private boolean startedInput = false;
+    private final boolean startedInput = false;
 
     private final TextButton ready;
 
@@ -47,10 +47,8 @@ public class BluetoothPlayersReadyState extends State{
 
         Gdx.input.setCatchBackKey(true);
 
-//        backGround = new Image(game.assetManager.get("BACKGROUND0001.png", Texture.class));
-//        backGround.setPosition(0, 0);
-//        backGround.setHeight(stage.getHeight());
-//        backGround.setWidth(stage.getWidth());
+        ///////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
 
         firstPlayerLabel = new Label("Connected: " + firstPlayerName, skin, "title");
         firstPlayerLabel.setHeight((float) (Constants.APP_HEIGHT * 0.2));
@@ -58,11 +56,17 @@ public class BluetoothPlayersReadyState extends State{
         firstPlayerLabel.setFontScale(1);
         firstPlayerLabel.setPosition(Constants.APP_WIDTH / 2 - firstPlayerLabel.getWidth() / 2, Constants.APP_HEIGHT / 4 * 3 - firstPlayerLabel.getHeight() / 2);
 
+        ///////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
+
         secondPlayerLabel = new Label(!secondPlayerConnected ? "Not Connected: " +  secondPlayerName: "Connected" + secondPlayerName, skin, "title");
         secondPlayerLabel.setHeight((float) (Constants.APP_HEIGHT * 0.2));
         secondPlayerLabel.setWidth((float) (Constants.APP_WIDTH * 0.8));
         secondPlayerLabel.setFontScale(1);
         secondPlayerLabel.setPosition(Constants.APP_WIDTH / 2 - secondPlayerLabel.getWidth() / 2, Constants.APP_HEIGHT / 4 * 2 - secondPlayerLabel.getHeight() / 2);
+
+        ///////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
 
         ready = new TextButton("Ready", skin);
         ready.setHeight((float) (Constants.APP_HEIGHT * 0.2));
@@ -84,9 +88,9 @@ public class BluetoothPlayersReadyState extends State{
                 sendReadyMessage(firstPlayerReady);
             }
         });
+        ///////////////////////////////////////////////////////////////////////////////////
 
         stage = new Stage(new ScreenViewport());
-//        stage.addActor(backGround);
         stage.addActor(firstPlayerLabel);
         stage.addActor(secondPlayerLabel);
         stage.addActor(ready);
@@ -112,10 +116,6 @@ public class BluetoothPlayersReadyState extends State{
     }
     private void goThroughMessages(){
         Array<String> messages = bluetoothService.getLastMessages();
-//        if (messages != null && messages.size > 0) {
-//            Gdx.app.log("Bluetooth", "Messages: " + messages.toString());
-//        }
-
         for(String message : messages){
             if(message.contains("PLAYER_NAME")){
                 setSecondPlayerName(message.substring(12));
@@ -171,19 +171,12 @@ public class BluetoothPlayersReadyState extends State{
             if(opponentRandom != 0){
                 if(opponentRandom > myRandom){
                     gsm.set(new BluetoothPlayState(gsm, true, firstPlayerName, secondPlayerName));
-//                    game.gameScreen = new MultiplayerGameScreen(game, myRandom, System.currentTimeMillis(), true, new BluetoothConnectionHandler(bluetoothService), firstPlayerName, secondPlayerName);
                     Gdx.app.log("Bluetooth", "Opponent Random: " + opponentRandom + " host is " + firstPlayerName);
                 }
                 else{
                     gsm.set(new BluetoothPlayState(gsm, false, firstPlayerName, secondPlayerName));
-                    Gdx.app.log("Bluetooth", "Opponent Random: " + opponentRandom + " host is " + secondPlayerName);
-//                    game.gameScreen = new MultiplayerGameScreen(game, opponentRandom, System.currentTimeMillis(), false, new BluetoothConnectionHandler(bluetoothService), firstPlayerName, secondPlayerName);
-                }
-
-//                game.setScreen(game.gameScreen);
-//                Gdx.input.setInputProcessor(null);
+                    Gdx.app.log("Bluetooth", "Opponent Random: " + opponentRandom + " host is " + secondPlayerName);}
             }
-
         }
         if(System.currentTimeMillis() - delta > 1000) {
             delta = System.currentTimeMillis();
@@ -220,5 +213,4 @@ public class BluetoothPlayersReadyState extends State{
         stage.dispose();
     }
 
-//    protected class
 }

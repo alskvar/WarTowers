@@ -36,22 +36,6 @@ public class AndroidLauncher extends AndroidApplication {
 		Context context = getApplicationContext();
 		bluetoothService = new AndroidBluetoothService(this, context);
 
-//		if (checkSelfPermission(Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED ||
-//				checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED ||
-//				checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//
-//			requestPermissions(new String[]{
-//					Manifest.permission.BLUETOOTH,
-//					Manifest.permission.BLUETOOTH_ADMIN,
-//					Manifest.permission.ACCESS_FINE_LOCATION
-//			}, 1);
-//		}
-//
-//		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
-//				ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-//			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN}, REQUEST_ENABLE_BT);
-//		}
-
 		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		if (bluetoothAdapter == null) {

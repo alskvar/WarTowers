@@ -21,7 +21,6 @@ public class PlayerData {
         this.gamesPlayed = otherPlayer.getGamesPlayed();
     }
 
-    // Getters and setters
     public String getName() {
         return name;
     }

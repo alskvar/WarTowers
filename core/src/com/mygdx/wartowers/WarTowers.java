@@ -4,13 +4,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.wartowers.Bluetooth.BluetoothServiceInterface;
-import com.mygdx.wartowers.database.DataHolderClass;
 import com.mygdx.wartowers.database.FireStoreInterface;
-import com.mygdx.wartowers.sprites.BattleResult;
-import com.mygdx.wartowers.sprites.PlayerData;
 import com.mygdx.wartowers.states.GameStateManager;
 import com.mygdx.wartowers.states.LoginState;
 import com.mygdx.wartowers.utils.Constants;
@@ -42,46 +38,7 @@ public class WarTowers extends Game {
 
 		Gdx.app.log("Screen Size", "Width: " + screenWidth + ", Height: " + screenHeight);
 
-//		testDBFunction();
-
 		gsm.push(new LoginState(gsm));
-	}
-
-	private void testDBFunction(){
-//		dbInterface.addPlayer(new PlayerData("Sasha", 4, 7));
-		BattleResult btr = new BattleResult("Sasha", "Kesha", "Sasha");
-		WarTowers.dbInterface.updateBattleResult(btr);
-		try {
-			// Sleep for 3 seconds (3000 milliseconds)
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// Handle interrupted exception
-			e.printStackTrace();
-		}
-		PlayerData playerData = new PlayerData();
-//		dbInterface.getPlayerStats("Sasha", playerData);
-		DataHolderClass dataHolder = new DataHolderClass();
-//		dbInterface.getTopPlayers(dataHolder);
-		try {
-			// Sleep for 3 seconds (3000 milliseconds)
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// Handle interrupted exception
-			e.printStackTrace();
-		}
-		Array<PlayerData> playerDataArray = dataHolder.getPlayerDataArray();
-		for (PlayerData pd : playerDataArray) {
-			System.out.println(pd.getName() + "  wins: " + pd.getWins() + "   total: " + pd.getGamesPlayed());
-		}
-		try {
-			// Sleep for 3 seconds (3000 milliseconds)
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// Handle interrupted exception
-			e.printStackTrace();
-		}
-
-		System.out.println(playerData.getName() + " wins" + playerData.getWins() + " total" + playerData.getGamesPlayed());
 	}
 
 	@Override

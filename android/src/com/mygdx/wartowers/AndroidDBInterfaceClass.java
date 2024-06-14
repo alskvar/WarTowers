@@ -65,7 +65,6 @@ public class AndroidDBInterfaceClass implements FireStoreInterface {
                 if (playersData == null) {
                     return;
                 }
-                    // Convert player data to PlayerData objects and add to the list
                 for (Map.Entry<String, Object> entry : playersData.entrySet()) {
                     String playerName = entry.getKey();
                     Map<String, Object> playerDataMap = (Map<String, Object>) entry.getValue();
@@ -77,7 +76,6 @@ public class AndroidDBInterfaceClass implements FireStoreInterface {
                     }
                 }
 
-                // Sort the player list based on wins in descending order
                 Collections.sort(playerList, new Comparator<PlayerData>() {
                     @Override
                     public int compare(PlayerData p1, PlayerData p2) {
@@ -85,8 +83,6 @@ public class AndroidDBInterfaceClass implements FireStoreInterface {
                     }
                 });
 
-//                Collections.reverse(playerList);
-                // Take at most 100 records
                 if (playerList.size() > 100) {
                     playerList = playerList.subList(0, 100);
                 }
@@ -217,19 +213,19 @@ public class AndroidDBInterfaceClass implements FireStoreInterface {
                             Log.d(TAG, "Player not found in database.");
                             result[0] = false;
                         }
-                        latch.countDown(); // Decrement latch count when operation completes
+                        latch.countDown();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, "Error checking if player exists", e);
-                        latch.countDown(); // Decrement latch count in case of failure
+                        latch.countDown();
                     }
                 });
 
         try {
-            latch.await(5, TimeUnit.SECONDS); // Wait for up to 5 seconds for the operation to complete
+            latch.await(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             Log.e(TAG, "Interrupted while checking if player exists", e);

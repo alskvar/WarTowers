@@ -28,8 +28,6 @@ public class AndroidBluetoothService implements BluetoothServiceInterface {
 
     private static AndroidBluetoothService instance;
     private final AndroidLauncher androidLauncher;
-    private static final int REQUEST_ENABLE_BT = 1;
-    private static final int REQUEST_BLUETOOTH_PERMISSIONS = 2;
 
     public static final int REQUEST_DISCOVERABLE_BT = 1;
 
@@ -103,7 +101,6 @@ public class AndroidBluetoothService implements BluetoothServiceInterface {
             this.socket = socket;
             return true;
         } catch (IOException e) {
-            Gdx.app.log("Bluetooth", "oooooooooops");
             if (socket != null) {
                 closeSocketQuietly(socket);
             }
