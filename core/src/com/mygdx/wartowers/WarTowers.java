@@ -19,14 +19,14 @@ import com.mygdx.wartowers.utils.Constants;
 public class WarTowers extends Game {
 	SpriteBatch batch;
 	GameStateManager gsm;
-	FireStoreInterface dbInterface;
-	BluetoothServiceInterface bluetoothService;
+	public static FireStoreInterface dbInterface;
+	public static BluetoothServiceInterface bluetoothService;
 
 	public WarTowers() {
 	}
 	public WarTowers(FireStoreInterface dbInterface, BluetoothServiceInterface bluetoothService) {
-		this.dbInterface = dbInterface;
-		this.bluetoothService = bluetoothService;
+		WarTowers.dbInterface = dbInterface;
+		WarTowers.bluetoothService = bluetoothService;
 	}
 	@Override
 	public void create () {
@@ -44,13 +44,13 @@ public class WarTowers extends Game {
 
 //		testDBFunction();
 
-		gsm.push(new LoginState(gsm, dbInterface, bluetoothService));
+		gsm.push(new LoginState(gsm));
 	}
 
 	private void testDBFunction(){
 //		dbInterface.addPlayer(new PlayerData("Sasha", 4, 7));
 		BattleResult btr = new BattleResult("Sasha", "Kesha", "Sasha");
-		dbInterface.updateBattleResult(btr);
+		WarTowers.dbInterface.updateBattleResult(btr);
 		try {
 			// Sleep for 3 seconds (3000 milliseconds)
 			Thread.sleep(2000);

@@ -17,14 +17,15 @@ public class BattleResultState extends State {
     private final Stage stage;
     private final Texture background;
     private final String winnerName;
+    private boolean changeDB;
 //    private final ImageButton menuButton;
 //    private final ImageButton menuButton;
 
-    public BattleResultState(final GameStateManager gsm, String winnerName) {
+    public BattleResultState(final GameStateManager gsm, String winnerName, String loserName, boolean changeDB) {
         super(gsm);
         this.winnerName = winnerName;
 
-
+        this.changeDB = changeDB;
         background = new Texture("backgroundImages/battleResult_bg.jpg");
 
         Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));

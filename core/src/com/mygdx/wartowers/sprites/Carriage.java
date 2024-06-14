@@ -29,7 +29,6 @@ public class Carriage {
         this.numberOfPassedTowers = 1;
         this.currentPosition = new Vector3(startPosition);
 
-        // Initialize the direction and remaining distance to the next tower
         this.direction = new Vector3();
         this.remainingDistanceToNextTower = -1;
 

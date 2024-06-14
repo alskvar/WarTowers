@@ -22,38 +22,36 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.wartowers.WarTowers;
 import com.mygdx.wartowers.database.DataHolderClass;
-import com.mygdx.wartowers.database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.PlayerData;
 import com.mygdx.wartowers.utils.Constants;
 
 import java.util.concurrent.CountDownLatch;
 
 public class MenuState extends State{
-
+    public static String nickname;
 
     private final Texture background;
     private final Texture emblem;
-    private final String nickname;
+
     private final float emblemWidth = Constants.APP_WIDTH / 2.2f;
     private final float emblemHeight = Constants.APP_WIDTH / 2.2f;
-    protected FireStoreInterface dbInterface;
 
 //    public MenuState(GameStateManager gsm){
-    public MenuState(GameStateManager gsm, FireStoreInterface dbInterface, String nickname){
+    public MenuState(GameStateManager gsm, String nickname){
         super(gsm);
-        this.nickname = nickname;
+        MenuState.nickname = nickname;
         inputProcessors = new Array<InputProcessor>();
         background = new Texture("backgroundImages/mainMenu_bg.jpg");
         emblem = new Texture("emblem2.png");
-        this.dbInterface = dbInterface;
         set_stage();
     }
 
     private Label[] fill_bestPlayersList(Skin skin){
         final DataHolderClass dataHolder = new DataHolderClass();
         final CountDownLatch latch = new CountDownLatch(1);
-        dbInterface.getTopPlayers(new OnPlayersFetchedListener() {
+        WarTowers.dbInterface.getTopPlayers(new OnPlayersFetchedListener() {
             @Override
             public void onPlayersFetched(Array<PlayerData> players) {
                 dataHolder.setPlayerDataArray(players);
@@ -111,33 +109,37 @@ public class MenuState extends State{
             @Override
             public void clicked(InputEvent event, float x, float y) {
 //                gsm.set(new PlayState(gsm));
-                gsm.push(new PlayState(gsm, dbInterface));
-//                gsm.push(new BattleResultState(gsm, "Sasha"));
+                gsm.push(new PlayState(gsm));
             }
         });
 
         ////////////////////////////////////////////////////////////////
-        Label nicknameLabel = new Label(this.nickname, skin);
+        TextButton buttonBluetooth = new TextButton("PLAY\nBluetooth", skin);
+        buttonBluetooth.setSize(Constants.APP_WIDTH/3.5f, Constants.APP_HEIGHT/15);
+        buttonBluetooth.getLabel().setFontScale(1.8f, 1.8f);
+        buttonBluetooth.setPosition(Constants.APP_WIDTH/2 - button.getWidth()/2, Constants.APP_HEIGHT/6 - button.getHeight()/2);
+        buttonBluetooth.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                WarTowers.bluetoothService.bluetoothConnectionProlong();
+                gsm.push(new BluetoothState(gsm));
+            }
+        });
+
+        ////////////////////////////////////////////////////////////////
+        Label nicknameLabel = new Label(MenuState.nickname, skin);
         nicknameLabel.setFontScale(2.5f, 2.5f);
         nicknameLabel.setPosition(Constants.APP_WIDTH / 2 - nicknameLabel.getWidth(), Constants.APP_HEIGHT / 2 - nicknameLabel.getHeight() / 2);
         nicknameLabel.setColor(new Color(0, 0, 0.55f, 1));
+
+
         ////////////////////////////////////////////////////////////////
-//        Texture buttonTexture = new Texture(Gdx.files.internal("assets/menuButton.png"));
         Texture buttonTexture = new Texture(Gdx.files.internal("buttons/menuButton.png"));
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(buttonTexture));
         ImageButton menu_button = new ImageButton(buttonDrawable);
         menu_button.setSize(Constants.APP_WIDTH/5, Constants.APP_HEIGHT/10);
         menu_button.setPosition(Constants.APP_WIDTH/2 - menu_button.getWidth()/2, Constants.APP_HEIGHT / 2.5f - menu_button.getHeight()/2);
-        menu_button.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-//                gsm.set(new MenuState(gsm));
-            }
-        });
 
-        ////////////////////////////////////////////////////////////////
-
-        // Create the settings subfield
         final Table settingsTable = createSettingsSubfield(skin);
         menu_button.addListener(new ClickListener() {
             @Override
@@ -151,15 +153,10 @@ public class MenuState extends State{
         TextButton bestPlayersButton = new TextButton("Best Players", skin);
         bestPlayersButton.setSize(Constants.APP_WIDTH/3, Constants.APP_HEIGHT/16);
         bestPlayersButton.getLabel().setFontScale(1.5f, 1.5f);
-        // Set the position of the button on the top right corner under the menu button
         bestPlayersButton.setPosition(Constants.APP_WIDTH/2 - bestPlayersButton.getWidth()/2,
                 Constants.APP_HEIGHT/3 - bestPlayersButton.getHeight()/2);
 
-
         ////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////
-        // Create the list of "Best players"
-
         final ScrollPane scoresList = new ScrollPane(updateScoresList(skin));
         scoresList.setHeight(Constants.APP_HEIGHT/2);
         scoresList.setWidth(Constants.APP_WIDTH / 2);
@@ -187,6 +184,7 @@ public class MenuState extends State{
         stage.addActor(bestPlayersButton);
         stage.addActor(nicknameLabel);
         stage.addActor(button);
+        stage.addActor(buttonBluetooth);
         stage.addActor(menu_button);
         stage.addActor(scoresList);
         stage.addActor(settingsTable);
@@ -204,19 +202,16 @@ public class MenuState extends State{
     private Table createSettingsSubfield(Skin skin) {
         final Table settingsTable = new Table(skin);
 
-        // Music Volume Slider
         Label musicLabel = new Label("Game Music", skin);
         musicLabel.setFontScale(2.2f, 2.2f);
         Slider musicSlider = new Slider(0, 1, 0.01f, false, skin);
         musicSlider.setValue((float)0.5);
 
-        // Sound Effects Volume Slider
         Label soundLabel = new Label("Sound Effects", skin);
         soundLabel.setFontScale(2.2f, 2.2f);
         Slider soundSlider = new Slider(0, 1, 0.01f, false, skin);
         soundSlider.setValue((float)0.5);
 
-        // Exit Button
         TextButton exitButton = new TextButton("Exit", skin);
         exitButton.addListener(new ClickListener() {
             @Override
@@ -269,7 +264,6 @@ public class MenuState extends State{
     public void dispose() {
         background.dispose();
         stage.dispose();
-//        menub.dispose();
     }
 
     public static InputProcessor createMenuWindowTouchProcessor(final Actor actorToHide) {
@@ -277,10 +271,9 @@ public class MenuState extends State{
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (actorToHide.isVisible()) {
-                    // Check if the touch is outside the area of the actor
                     if (screenX < actorToHide.getX() || screenX > actorToHide.getX() + actorToHide.getWidth() ||
                             screenY < actorToHide.getY() || screenY > actorToHide.getY() + actorToHide.getHeight()) {
-                        actorToHide.setVisible(false); // Hide the actor
+                        actorToHide.setVisible(false);
                     }
                 }
                 return false;

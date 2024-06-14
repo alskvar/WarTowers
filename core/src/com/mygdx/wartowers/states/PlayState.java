@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.wartowers.database.FireStoreInterface;
 import com.mygdx.wartowers.sprites.Battleground;
 import com.mygdx.wartowers.sprites.Carriage;
 import com.mygdx.wartowers.sprites.Catastrophe;
@@ -26,27 +25,25 @@ import java.util.Random;
 public class PlayState extends State implements InputProcessor, GestureDetector.GestureListener {
 
     private final GestureDetector gestureDetector;
-    private boolean doubleTapDetected;
+    protected boolean doubleTapDetected;
 
-    private final Battleground battleground;
+    protected final Battleground battleground;
     private final Texture bg;
     private final Random random;
-    private final ArrayList<Carriage> carriages;
-    protected FireStoreInterface dbInterface;
-    private float lastGyroX;
-    private float lastGyroY;
-    private float lastGyroZ;
-    private float gyroscopeTimeout;
-    private final Catastrophe catastrophe;
+    protected final ArrayList<Carriage> carriages;
+    protected float lastGyroX;
+    protected float lastGyroY;
+    protected float lastGyroZ;
+    protected float gyroscopeTimeout;
+    protected final Catastrophe catastrophe;
 
-    private final Skin skin;
+    protected final Skin skin;
 
 
-    public PlayState(GameStateManager gsm, FireStoreInterface dbInterface) {
+    public PlayState(GameStateManager gsm) {
         super(gsm);
         random = new Random();
         catastrophe = new Catastrophe();
-        this.dbInterface = dbInterface;
         battleground = new Battleground(loadJsonFromFile(Constants.BATTLEGROUND_JSON_PATH));
         carriages = new ArrayList<>();
         bg = new Texture(battleground.getBackgroundImagePath());
@@ -67,7 +64,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     protected void handleInput() {
     }
 
-    private boolean updateGyroscope(float dt){
+    protected boolean updateGyroscope(float dt){
         float currentGyroX = Gdx.input.getGyroscopeX();
         float currentGyroY = Gdx.input.getGyroscopeY();
         float currentGyroZ = Gdx.input.getGyroscopeZ();
@@ -101,7 +98,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
     public void update(float dt) {
         battleground.updateTowers(dt);
         if(battleground.checkIsGameOver()){
-            gsm.set(new BattleResultState(gsm, "Sasha"));
+            gsm.set(new BattleResultState(gsm, MenuState.nickname, "None", false));
             return;
         }
         catastrophe.update(dt);
@@ -133,6 +130,8 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         }
         catastrophe.render(sb);
         sb.end();
+        stage.act();
+        stage.draw();
     }
 
     @Override
@@ -143,10 +142,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         catastrophe.dispose();
     }
 
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        return false;
-    }
+
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
@@ -158,7 +154,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             Gdx.app.log("doubleTaP", "Boolean: " + doubleTapDetected);
             for(int i = 0; i < battleground.getTowers().size; ++i) {
                 Tower tower = battleground.getTowers().get(i);
-                if (tower.overlap(x, y)) {
+                if (tower.overlap(x, y) && tower.getOwner() == 1) {
                     tower.upgradeTower();
                     break;
                 }
@@ -223,6 +219,10 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         return false;
     }
 
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -231,6 +231,7 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
             Tower tower = battleground.getTowers().get(i);
             if(tower.overlap(screenX, screenY)){
                 tower.setSelected(true);
+                Gdx.app.log("selected", "Tower selected: " + tower.getId());
                 break;
             }
         }

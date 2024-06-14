@@ -11,8 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.wartowers.Bluetooth.BluetoothServiceInterface;
-import com.mygdx.wartowers.database.FireStoreInterface;
 import com.mygdx.wartowers.utils.Constants;
 
 public class LoginState extends State {
@@ -21,13 +19,9 @@ public class LoginState extends State {
     private TextField nicknameField;
     private Label errorLabel;
     private final Texture background;
-    private final FireStoreInterface dbInterface;
-    private final BluetoothServiceInterface bluetoothService;
 
-    public LoginState(GameStateManager gsm, FireStoreInterface dbInterface, BluetoothServiceInterface bluetoothService) {
+    public LoginState(GameStateManager gsm) {
         super(gsm);
-        this.dbInterface = dbInterface;
-        this.bluetoothService = bluetoothService;
         background = new Texture("backgroundImages/mainMenu_bg.jpg");
         setStage();
 //        setupBluetooth();
@@ -93,7 +87,7 @@ public class LoginState extends State {
             errorLabel.setText("Nickname cannot be empty and bigger than 15 symbols");
             return;
         }
-        gsm.set(new MenuState(gsm, dbInterface, nickname.trim()));
+        gsm.set(new MenuState(gsm, nickname.trim()));
     }
 
 //    private void setupBluetooth() {

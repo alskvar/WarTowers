@@ -67,7 +67,7 @@ public class Tower  {
     }
 
     public void upgradeTower(){
-        if(owner != 1 || level == 1 || amount < 15)
+        if(level == 1 || amount < 15)
             return;
         level = 1;
         amount -= 10;
@@ -109,8 +109,7 @@ public class Tower  {
     }
 
     public void setSelected(boolean res){
-        if (owner == 1)
-            selected = res;
+        selected = res;
     }
 
     public int[] transferOut(int kind){
