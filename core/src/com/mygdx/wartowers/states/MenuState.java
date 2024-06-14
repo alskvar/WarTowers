@@ -75,27 +75,6 @@ public class MenuState extends State{
         return labels;
     }
 
-    protected void activateStagesInputProcessor(){
-        InputMultiplexer multiplexer = new InputMultiplexer();
-
-        // Iterate over the actors and add their input processors to the multiplexer
-        for (InputProcessor inputProcessor: inputProcessors) {
-            multiplexer.addProcessor(inputProcessor);
-        }
-        Gdx.input.setInputProcessor(multiplexer);
-    }
-
-    private Table updateScoresList(Skin skin){
-        Table scrollTable = new Table(skin);
-        scrollTable.clear();
-        Label[] scores = fill_bestPlayersList(skin);
-        for(Label curLabel : scores){
-            scrollTable.add(curLabel);
-            scrollTable.row();
-        }
-        return scrollTable;
-    }
-
     private void set_stage(){
         final Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
         Skin skin_def = new Skin(Gdx.files.internal("font_skins/default/uiskin.json"));
@@ -156,7 +135,6 @@ public class MenuState extends State{
         bestPlayersButton.setPosition(Constants.APP_WIDTH/2 - bestPlayersButton.getWidth()/2,
                 Constants.APP_HEIGHT/3 - bestPlayersButton.getHeight()/2);
 
-        ////////////////////////////////////////////////////////////////////
         final ScrollPane scoresList = new ScrollPane(updateScoresList(skin));
         scoresList.setHeight(Constants.APP_HEIGHT/2);
         scoresList.setWidth(Constants.APP_WIDTH / 2);
@@ -176,8 +154,6 @@ public class MenuState extends State{
             }
         });
 
-        ///////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////
 
         stage = new Stage(new ScreenViewport());
@@ -240,6 +216,28 @@ public class MenuState extends State{
 
         return settingsTable;
     }
+
+    protected void activateStagesInputProcessor(){
+        InputMultiplexer multiplexer = new InputMultiplexer();
+
+        // Iterate over the actors and add their input processors to the multiplexer
+        for (InputProcessor inputProcessor: inputProcessors) {
+            multiplexer.addProcessor(inputProcessor);
+        }
+        Gdx.input.setInputProcessor(multiplexer);
+    }
+
+    private Table updateScoresList(Skin skin){
+        Table scrollTable = new Table(skin);
+        scrollTable.clear();
+        Label[] scores = fill_bestPlayersList(skin);
+        for(Label curLabel : scores){
+            scrollTable.add(curLabel);
+            scrollTable.row();
+        }
+        return scrollTable;
+    }
+
 
     @Override
     protected void handleInput() {

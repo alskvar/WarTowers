@@ -1,0 +1,23 @@
+{
+  "towers": [
+    {"id": 0, "xScale": 0.5, "yScale": 0.75, "owner": 1, "level":0, "troops": 10, "troopsType": 1},
+    {"id": 1, "xScale": 0.1, "yScale": 0.4, "owner": 0, "level":0, "troops": 10, "troopsType": 1},
+    {"id": 2, "xScale": 0.9, "yScale": 0.4, "owner": 0, "level":0, "troops": 10, "troopsType": 1},
+    {"id": 3, "xScale": 0.58, "yScale": 0.53, "owner": 0, "level":0, "troops": 10, "troopsType": 0},
+    {"id": 4, "xScale": 0.42, "yScale": 0.27, "owner": 0, "level":0, "troops": 10, "troopsType": 0},
+    {"id": 5, "xScale": 0.5, "yScale": 0.05, "owner": 2, "level":0, "troops": 10, "troopsType": 1}
+  ],
+  "connections": [
+    {"from": 0, "to": 1, "weight": 15},
+    {"from": 0, "to": 2, "weight": 15},
+    {"from": 0, "to": 3, "weight": 10},
+    {"from": 1, "to": 3, "weight": 10},
+    {"from": 2, "to": 3, "weight": 10},
+    {"from": 1, "to": 4, "weight": 10},
+    {"from": 2, "to": 4, "weight": 10},
+    {"from": 2, "to": 5, "weight": 15},
+    {"from": 1, "to": 5, "weight": 15},
+    {"from": 4, "to": 5, "weight": 10}
+  ],
+  "backgroundPath": "backgroundImages/preset2_bg2.png"
+}

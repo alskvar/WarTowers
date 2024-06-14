@@ -4,6 +4,7 @@ import static com.mygdx.wartowers.WarTowers.bluetoothService;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,7 +22,7 @@ public class BluetoothPlayersReadyState extends State{
 
     private Label firstPlayerLabel;
     private Label secondPlayerLabel;
-//    private final Image backGround;
+    private final Texture background;
     String firstPlayerName = "None";
     String secondPlayerName = "None";
     boolean secondPlayerConnected = false;
@@ -41,7 +42,7 @@ public class BluetoothPlayersReadyState extends State{
         Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
         this.firstPlayerName = MenuState.nickname;
         this.secondPlayerName = "Now None";
-
+        background = new Texture("backgroundImages/scroll.png");
         delta = System.currentTimeMillis();
 
         Gdx.input.setCatchBackKey(true);
@@ -161,16 +162,6 @@ public class BluetoothPlayersReadyState extends State{
 
     @Override
     public void update(float dt) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
-            gsm.pop();
-            gsm.peek().activateStagesInputProcessor();
-            bluetoothService.closeAllConnections();
-            Gdx.input.setCatchBackKey(false);
-        }
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
         if (firstPlayerReady && secondPlayerReady) {
             if(myRandom == 0) {
                 myRandom = Math.abs(new Random().nextInt()) + 1;
@@ -204,20 +195,28 @@ public class BluetoothPlayersReadyState extends State{
         if (!bluetoothService.checkSocketConnection()) {
             secondPlayerConnected = false;
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            gsm.pop();
+            gsm.peek().activateStagesInputProcessor();
+            bluetoothService.closeAllConnections();
+            Gdx.input.setCatchBackKey(false);
+        }
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        sb.begin();
+        sb.draw(background, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+        sb.end();
         firstPlayerLabel.setText("Connected: " + firstPlayerName + (!firstPlayerReady ? ": Not Ready" : ": Ready"));
         secondPlayerLabel.setText(!secondPlayerConnected ? "Not Connected: " : "Connected: " + secondPlayerName + (!secondPlayerConnected ? "" : !secondPlayerReady ? ": Not Ready" : ": Ready"));
-        Gdx.app.log("Bluetooth", "" + firstPlayerLabel.getText() + "\n hehe   " + secondPlayerLabel.getText());
         stage.act();
-//        if(!startedInput){
-//            startedInput = true;
-//            NickInputBluetooth playerNickInput = new NickInputBluetooth(this);
-//            Gdx.input.getTextInput(playerNickInput, "Your Name", "", "Put your nick here");
-//        }
         stage.draw();
     }
 
     @Override
     public void dispose() {
+        background.dispose();
         stage.dispose();
     }
 

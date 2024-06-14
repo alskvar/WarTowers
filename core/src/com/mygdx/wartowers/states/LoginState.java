@@ -24,33 +24,11 @@ public class LoginState extends State {
         super(gsm);
         background = new Texture("backgroundImages/mainMenu_bg.jpg");
         setStage();
-//        setupBluetooth();
     }
 
     private void setStage() {
         stage = new Stage(new ScreenViewport());
         Skin skin = new Skin(Gdx.files.internal(Constants.SKIN_COSMIC_PATH));
-//
-//        TextButton hostButton = new TextButton("Host Game", skin);
-//        hostButton.setSize(Constants.APP_WIDTH / 3.5f, Constants.APP_HEIGHT / 15);
-//        hostButton.getLabel().setFontScale(1.8f, 1.8f);
-//        hostButton.setPosition(Constants.APP_WIDTH / 2 - hostButton.getWidth() / 2, Constants.APP_HEIGHT / 1.5f - hostButton.getHeight() / 2);
-//        hostButton.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                bluetoothService.startAcceptingConnections();
-//            }
-//        });
-//        TextButton joinButton = new TextButton("Join Game", skin);
-//        joinButton.setSize(Constants.APP_WIDTH / 3.5f, Constants.APP_HEIGHT / 15);
-//        joinButton.getLabel().setFontScale(1.8f, 1.8f);
-//        joinButton.setPosition(Constants.APP_WIDTH / 2 - joinButton.getWidth() / 2, Constants.APP_HEIGHT / 1.2f - joinButton.getHeight() / 2);
-//        joinButton.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                bluetoothService.startDeviceDiscovery();
-//            }
-//        });
 
         nicknameField = new TextField("", skin);
         nicknameField.getStyle().font.getData().setScale(1.8f);
@@ -72,11 +50,9 @@ public class LoginState extends State {
         errorLabel.setColor(1, 0, 0, 1);  // red color
         errorLabel.setPosition(Constants.APP_WIDTH / 2 - errorLabel.getWidth() / 2, Constants.APP_HEIGHT / 2 - 50);
 
-//        stage.addActor(hostButton);
         stage.addActor(nicknameField);
         stage.addActor(loginButton);
         stage.addActor(errorLabel);
-//        stage.addActor(joinButton);
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -89,17 +65,6 @@ public class LoginState extends State {
         }
         gsm.set(new MenuState(gsm, nickname.trim()));
     }
-
-//    private void setupBluetooth() {
-//        bluetoothService.setOnDataReceivedListener(new BluetoothService.OnDataReceivedListener() {
-//            @Override
-//            public void onDataReceived(byte[] data) {
-//                // Handle received data
-//                Gdx.app.log("BluetoothData", new String(data));
-//                // Process the data as required
-//            }
-//        });
-//    }
 
     @Override
     protected void handleInput() {

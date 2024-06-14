@@ -2,6 +2,7 @@ package com.mygdx.wartowers.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,10 +21,12 @@ import java.util.ArrayList;
 
 public class BluetoothState extends State {
     private ArrayList<TextButton> bluetoothButtons;
+    private Texture background;
 
     public BluetoothState(GameStateManager gsm) {
         super(gsm);
         setupUI();
+        background = new Texture("backgroundImages/scroll.png");
         Gdx.input.setCatchBackKey(true);
     }
 
@@ -32,7 +35,7 @@ public class BluetoothState extends State {
 
         Label label = new Label("Choose a device to connect to", skin);
         label.setFontScale(2.5f);
-        label.setPosition(Constants.APP_WIDTH / 2 - label.getWidth(), Constants.APP_HEIGHT / 1.5f + label.getHeight() / 2);
+        label.setPosition(Constants.APP_WIDTH / 2 - label.getWidth(), Constants.APP_HEIGHT / 1.3f + label.getHeight() / 2);
 
 
         Array<String> bluetoothNames= WarTowers.bluetoothService.getConnectedDevicesChoices();
@@ -74,18 +77,18 @@ public class BluetoothState extends State {
         bluetoothList.setHeight(Constants.APP_HEIGHT / 3);
         bluetoothList.setWidth((float) (Constants.APP_WIDTH * 0.9));
 
-        bluetoothList.setPosition(Constants.APP_WIDTH / 2 - bluetoothList.getWidth() / 2,  Constants.APP_HEIGHT / 5f);
+        bluetoothList.setPosition(Constants.APP_WIDTH / 2 - bluetoothList.getWidth() / 2,  Constants.APP_HEIGHT / 3f);
         return bluetoothList;
     }
 
     @Override
     protected void handleInput() {
-        // Handle input if needed
+
     }
 
     @Override
     protected void activateStagesInputProcessor() {
-        // Activate stage input processors if needed
+
     }
 
     @Override
@@ -95,6 +98,9 @@ public class BluetoothState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
+        sb.begin();
+        sb.draw(background, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+        sb.end();
         stage.act();
         stage.draw();
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
@@ -106,6 +112,7 @@ public class BluetoothState extends State {
 
     @Override
     public void dispose() {
+        background.dispose();
         stage.dispose();
     }
 }

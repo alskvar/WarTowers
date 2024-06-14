@@ -250,18 +250,18 @@ public class PlayState extends State implements InputProcessor, GestureDetector.
         }
         if(selected == null)
             return false;
+        if (selected.getOwner() != 1){
+            selected.setSelected(false);
+            return false;
+        }
         System.out.println("selected: " + selected.getId());
         for(int i = 0; i < battleground.getTowers().size; ++i){
             Tower tower = battleground.getTowers().get(i);
-            if(tower != selected && tower.overlap(screenX, screenY)){
+            if(tower.getId() != selected.getId() && tower.overlap(screenX, screenY)){
                 Battleground.PathResult pathResult =
                         battleground.getShortestPath(selected.getId(), tower.getId());
                 if (pathResult.getDistance() == Integer.MAX_VALUE) {
                     System.out.println("no path");
-                    break;
-                }
-                if (tower.getId() == selected.getId()) {
-                    System.out.println("can't send to yourself");
                     break;
                 }
                 System.out.println("" + selected.getId() + " attacks " + tower.getId());
